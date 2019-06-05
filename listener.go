@@ -5,14 +5,24 @@ import (
 	"regexp"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/nlopes/slack"
 )
 
 // Listener monitors slack for matching incoming messages and then
 // handles them using a MessageHandlerFunc or EventHandlerFunc
 type Listener struct {
+	// Name of the app. Used during app listing.
+	Name string
+
+	// Description of the app. Used during app listing.
+	Description string
+
+	// Slug is a short code used in the help menu
+	Slug string
+
+	// Commands are the help documentation for commands
+	Commands []Command
+
 	// replyAck is filled when you call Listen() on a Reply.
 	replyAck *slack.AckMessage
 
@@ -117,10 +127,11 @@ func (listen *Listener) ReplyAck() *slack.AckMessage {
 	return listen.replyAck
 }
 
-// ResetDuration re-initializes the timeout set by
-// `Listener.ListenDuration`, and continues listening for another
-// such duration.
+// ResetDuration re-initializes the timeout set by `Listener.ListenDuration`, and continues
+// listening for another such duration.
 func (listen *Listener) ResetDuration() error {
+	log := listen.Bot.Logging.Logger
+
 	if int64(listen.ListenDuration) == 0 {
 		msg := "Listener has no ListenDuration"
 		log.Println("ResetDuration() error: ", msg)
@@ -154,6 +165,7 @@ func (listen *Listener) launchManager() {
 		}
 	}
 }
+
 func (listen *Listener) timeoutDuration() (timeout time.Duration) {
 	if !listen.ListenUntil.IsZero() {
 		now := time.Now()

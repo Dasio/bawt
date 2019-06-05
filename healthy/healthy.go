@@ -33,8 +33,24 @@ func (healthy *Healthy) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MentionsMeOnly:     true,
-		ContainsAny:        []string{"health", "healthy?", "health_check"},
+		ContainsAny:        []string{"!health", "!healthy?", "!health_check"},
 		MessageHandlerFunc: healthy.ChatHandler,
+		Name:               "Healthy",
+		Description:        "Assesses health checks",
+		Commands: []bawt.Command{
+			{
+				Usage:    "!health",
+				HelpText: "Conducts a health check on all endpoints",
+			},
+			{
+				Usage:    "!health?",
+				HelpText: "Conducts a health check on all endpoints",
+			},
+			{
+				Usage:    "!health_check",
+				HelpText: "Conducts a health check on all endpoints",
+			},
+		},
 	})
 }
 

@@ -2,27 +2,41 @@
 title: home
 ---
 
-bawt is a Go-based ChatOps bot for Slack.
+## Bawt is a Slack bot framework written in Go. 
+
+---
+
+Our goal is that bawt is always **easy to start**, **easy to run**, **easy to enhance**
+
+**Easy to start.** The single biggest turn off I had when trying out a new project was the amount of time it took me to get started with something meaningful. The plugin footprint is intentionally light yet extensive and why Bawt's core can be started with just two files. We aim to strike a rare balance of extensibility and simplicity.
+
+**Easy to run.** Bawt is updated via modules and follows [Semantic Versioning (SemVer)](https://semver.org/) so you'll always know what sort of changes await you. Bawt's core code is abstracted into the Messaging API so even when Slack breaks their API's (and they will) you will never notice as a plugin developer.
+
+**Easy to enhance.** We want Bawt's code to make sense not just to core developers but to plugin devs as well. That's why Bawt's core is both verbose and descriptive. There's no buried functionality, what you see is what you get.
+
+---
 
 ## Features
+This is by far not a comprehensive list
 
-* Plugin interface for chat messages
-* Plugin-based HTTP handlers
-* Simple API to reply to users
-* Keeps an internal state of channels, users and their state.
-* Listen for Reactions; take actions based on them (like buttons).
-* Simple API to message users privately
-* Simple API to update a previously sent message
-* Simple API to delete bot messages after a given time duration.
-* Easy plugin interface, listeners with criteria such as:
-  * Messages directed to the bot only
-  * Private or public messages
-  * Listens for a duration or until a given `time.Time`
-  * Selectively on a channel, or from a user
-  * Expire listeners and unregister them dynamically
-  * Supports listening for edits or not
-  * Regexp match messages, or Contains checks
-* Built-in KV store for data persistence (backed by BoltDB and JSON serialization)
-* The bot has a mood (_happy_ and _hyper_) which changes randomly.. you can base some decisions on it, to spice up conversations.
-* Supports listening for any Slack events (ChannelCreated, ChannelJoined, EmojiChanged, FileShared, GroupArchived, etc..)
-* A PubSub system to facilitate inter-plugins (or chat-to-web) communications.
+* Easy to start, Easy to maintain, Easy to enhance
+* Plugin API
+  * Single function registration
+  * Built in help docs interface
+  * Chat, HTTP, or HTTPAuth type plugins
+* Messaging API
+  * Channel and DM's
+  * Public and private messages
+  * Ephemeral messages (disappear after duration)
+  * Update previously sent message
+  * File and Snippet uploads
+* Listener API
+  * Dynamic registration and deregistration
+  * Listen for Messages, Edits, Reactions...
+  * Regex and contains based checks
+* BoltDB for data persistence
+* Central Slack event loop
+* Tracks state internally (Channels, Users, and their state)
+* Built in web server that support authentication
+  * Communication between web plugins and chat plugins
+* Uses modules for versioning

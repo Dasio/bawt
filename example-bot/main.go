@@ -8,6 +8,7 @@ import (
 	_ "github.com/gopherworks/bawt/faceoff"
 	_ "github.com/gopherworks/bawt/funny"
 	_ "github.com/gopherworks/bawt/healthy"
+	_ "github.com/gopherworks/bawt/help"
 	_ "github.com/gopherworks/bawt/hooker"
 	_ "github.com/gopherworks/bawt/mooder"
 	_ "github.com/gopherworks/bawt/plotberry"

@@ -1,7 +1,6 @@
 package todo
 
 import (
-	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/gopherworks/bawt"
@@ -24,9 +23,13 @@ func (p *Plugin) InitPlugin(bot *bawt.Bot) {
 		return err
 	})
 	if err != nil {
-		log.Fatalln("Couldn't create the `todos` bucket")
+		p.bot.Logging.Logger.Fatalln("Couldn't create the `todos` bucket")
 	}
 
-	p.store = &boltStore{db: bot.DB}
+	p.store = &boltStore{
+		db:  bot.DB,
+		log: bot.Logging.Logger,
+	}
+
 	p.listenTodo()
 }

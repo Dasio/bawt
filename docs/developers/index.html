@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="description" content="a ChatOps Slackbot written in Go">
+
+
+    <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
+<link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
+    <title>Developers :: Documentation for Hugo Learn Theme</title>
+
+    
+    <link href="/bawt/css/nucleus.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/fontawesome-all.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/hybrid.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/featherlight.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/perfect-scrollbar.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/auto-complete.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/theme.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/hugo-theme.css?1559711070" rel="stylesheet">
+    
+      <link href="/bawt/css/theme-blue.css?1559711070" rel="stylesheet">
+    
+
+    <script src="/bawt/js/jquery-2.x.min.js?1559711070"></script>
+
+    <style type="text/css">
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/bawt/developers/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <img src="/bawt/img/bawt-white.svg" />
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="text" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-close"></i></span>
+</div>
+
+<script type="text/javascript" src="/bawt/js/lunr.min.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/auto-complete.js?1559711070"></script>
+<script type="text/javascript">
+    
+        var baseurl = "https:\/\/capstonelabs.github.io\/bawt\/";
+    
+</script>
+<script type="text/javascript" src="/bawt/js/search.js?1559711070"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/getting-started/" title="Getting Started" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/getting-started/">
+          Getting Started
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
+        parent
+        active
+        
+        ">
+      <a href="/bawt/developers/">
+          Developers
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/plugins/" title="Plugins" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/developers/plugins/">
+          Plugins
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/10-datastores/" title="Datastores" class="dd-item ">
+        <a href="/bawt/developers/10-datastores/">
+        Datastores
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/press-kit/" title="Press Kit" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/press-kit/">
+          Press Kit
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/code-of-conduct/" title="Code of Conduct" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/code-of-conduct/">
+          Code of Conduct
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+      <section id="shortcuts">
+        <h3>More</h3>
+        <ul>
+          
+              <li> 
+                  <a class="padding" href="https://github.com/gopherworks/bawt"><i class='fab fa-fw fa-github'></i> Github repo</a>
+              </li>
+          
+              <li> 
+                  <a class="padding" href="https://gohugo.io/"><i class='fas fa-fw fa-bookmark'></i> Hugo Documentation</a>
+              </li>
+          
+        </ul>
+      </section>
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <p>Built with <a href="https://github.com/matcornic/hugo-theme-learn"><i class="fas fa-heart"></i></a> from <a href="http://getgrav.org">Grav</a> and <a href="http://gohugo.io/">Hugo</a></p>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/_index.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                    
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > Developers
+          
+         
+          
+           
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+
+        
+        <div id="body-inner">
+          
+            <h1>Developers</h1>
+          
+
+        
+
+
+
+
+<p>Whether you&rsquo;re developing on Bawt&rsquo;s core functionality or a new plugin, development should always be fun. If you spot something that&rsquo;s not enjoyable then open an issue and let&rsquo;s start fixing it together.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul>
+<li>Read the <a href="https://github.com/gopherworks/bawt/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
+<li>Read our <a href="https://github.com/gopherworks/bawt/blob/master/CONTRIBUTING.md">Contributing Guide</a></li>
+</ul>
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+        
+            <a class="nav nav-prev" href="/bawt/getting-started/" title="Getting Started"> <i class="fas fa-chevron-left"></i></a>
+        
+        
+            <a class="nav nav-next" href="/bawt/developers/plugins/" title="Plugins" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/bawt/js/clipboard.min.js?1559711070"></script>
+    <script src="/bawt/js/perfect-scrollbar.min.js?1559711070"></script>
+    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1559711070"></script>
+    <script src="/bawt/js/jquery.sticky.js?1559711070"></script>
+    <script src="/bawt/js/featherlight.min.js?1559711070"></script>
+    <script src="/bawt/js/html5shiv-printshiv.min.js?1559711070"></script>
+    <script src="/bawt/js/highlight.pack.js?1559711070"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/bawt/js/modernizr.custom.71422.js?1559711070"></script>
+    <script src="/bawt/js/learn.js?1559711070"></script>
+    <script src="/bawt/js/hugo-learn.js?1559711070"></script>
+
+    <link href="/bawt/mermaid/mermaid.css?1559711070" type="text/css" rel="stylesheet" />
+    <script src="/bawt/mermaid/mermaid.js?1559711070"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    
+
+  </body>
+</html>

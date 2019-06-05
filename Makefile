@@ -1,22 +1,41 @@
+VERSION = $(shell cat ./VERSION)
+
 # The default, used by Travis CI
 test:
-	./scripts/pre-commit.sh
+	@env GO111MODULE=on go test -mod=vendor -v -short ./...
 
-build:
-	env GO111MODULE=on go build ./...
+clean:
+	@printf "# Removing vendor dir\n"
+	@rm -rf vendor
+	@printf "# Removing build dir\n"
+	@rm -rf build
+
+build: clean vendor
+	@env GO111MODULE=on go build -mod=vendor -ldflags '-X "github.com/gopherworks/bawt.Version=${VERSION}" -s -w' -o build/bawt ./example-bot
+	@chmod a+x build/bawt
+
+vendor:
+	@go mod tidy
+	@go mod vendor
+
+run:
+	@build/bawt
 
 get:
-	env GO111MODULE=on go get ./...
+	@env GO111MODULE=on go get ./...
 
 cov: 
-	env GO111MODULE=on go test -coverprofile=coverage.out 
-	env GO111MODULE=on go tool cover -html=coverage.out
+	@env GO111MODULE=on go test -mod=vendor -coverprofile=coverage.out ./...
+	@env GO111MODULE=on go tool cover -html=coverage.out
+
+go-doc:
+	@./scripts/godoc.sh
 
 build-docs:
-	cd docs-src && hugo
+	@cd docs-src && hugo
 
 clean-docs:
-	rm -rf docs/*
+	@rm -rf docs/*
 
 run-docs:
-	cd docs-src && hugo server --watch
+	@cd docs-src && hugo server --watch

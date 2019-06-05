@@ -3,7 +3,7 @@ package todo
 import (
 	"encoding/json"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 )
@@ -14,7 +14,8 @@ type Store interface {
 }
 
 type boltStore struct {
-	db *bolt.DB
+	db  *bolt.DB
+	log *logrus.Logger
 }
 
 var bucketName = []byte("todos")
@@ -44,6 +45,6 @@ func (s *boltStore) Put(channel string, t Todo) {
 		return nil
 	})
 	if err != nil {
-		log.Println("ERROR saving Todo:", err)
+		s.log.Println("ERROR saving Todo:", err)
 	}
 }

@@ -16,6 +16,8 @@ func (p *Plugin) listenRecognize() {
 	p.bot.Listen(&bawt.Listener{
 		Matches:            regexp.MustCompile(`!recognize ((<@U[A-Z0-9]+(|[a-zA-Z0-9_-])?>(, ?| and )?)+) for (.*)`),
 		MessageHandlerFunc: p.handleRecognize,
+		Name:               "Recognition",
+		Description:        "A fun game that encourages team mates to learn each others faces",
 	})
 }
 

@@ -3,7 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://capstonelabs.github.io/bawt/plugins/</loc>
+    <loc>https://capstonelabs.github.io/bawt/getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/plugins/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/10-datastores/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/</loc>
   </url>
   
   <url>

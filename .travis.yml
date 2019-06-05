@@ -2,21 +2,20 @@ dist: trusty # use the newer operating system
 sudo: false # run our builds in containers
 language: go
 go:
-- 1.11.x
+- 1.12.x
+env:
+  - GO111MODULE=on
+install: true
 stages:
 - name: Testing
 - name: Build
 jobs:
   include:
   - stage: Testing
-    name: Pre-commit
-    install:
-    - make get
+    name: Testing
     script:
     - make
   - stage: Build
     name: Build
-    install:
-    - make get
     script:
     - make build

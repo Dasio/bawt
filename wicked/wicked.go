@@ -23,6 +23,8 @@ import (
 
 // Wicked stores the configuration for wicked
 type Wicked struct {
+	name         string
+	description  string
 	bot          *bawt.Bot
 	confRooms    []string
 	meetings     map[string]*Meeting
@@ -35,12 +37,16 @@ var (
 )
 
 func init() {
-	bawt.RegisterPlugin(&Wicked{})
+	bawt.RegisterPlugin(&Wicked{
+		name:        "Wicked",
+		description: "A conferencing app",
+	})
 }
 
-func (wicked *Wicked) InitPlugin(bot *bawt.Bot) {
-	wicked.bot = bot
-	wicked.meetings = make(map[string]*Meeting)
+func (w *Wicked) InitPlugin(bot *bawt.Bot) {
+
+	w.bot = bot
+	w.meetings = make(map[string]*Meeting)
 
 	var conf struct {
 		Wicked struct {
@@ -51,15 +57,21 @@ func (wicked *Wicked) InitPlugin(bot *bawt.Bot) {
 	bot.LoadConfig(&conf)
 
 	for _, confroom := range conf.Wicked.Confrooms {
-		wicked.confRooms = append(wicked.confRooms, confroom)
+		w.confRooms = append(w.confRooms, confroom)
 	}
 
 	bot.Listen(&bawt.Listener{
-		MessageHandlerFunc: wicked.ChatHandler,
+		MessageHandlerFunc: w.ChatHandler,
+		Name:               "Wicked",
+		Description:        "An assistant for recording conferences held over Slack",
 	})
 }
 
-func (wicked *Wicked) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
+func (w *Wicked) HelpInfo() (name string, description string) {
+	return w.name, w.description
+}
+
+func (w *Wicked) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 	bot := listen.Bot
 	uuidNow := time.Now()
 
@@ -69,18 +81,18 @@ func (wicked *Wicked) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 			fromRoom = msg.FromChannel.ID
 		}
 
-		availableRoom := wicked.FindAvailableRoom(fromRoom)
+		availableRoom := w.FindAvailableRoom(fromRoom)
 
 		if availableRoom == nil {
 			msg.Reply("No available Wicked Confroom for a meeting! Seems you'll need to create new Wicked Confrooms !")
 			goto continueLogging
 		}
 
-		id := wicked.NextMeetingID()
+		id := w.NextMeetingID()
 		meeting := NewMeeting(id, msg.FromUser, msg.Text[7:], bot, availableRoom, uuidNow)
 
-		wicked.pastMeetings = append(wicked.pastMeetings, meeting)
-		wicked.meetings[availableRoom.ID] = meeting
+		w.pastMeetings = append(w.pastMeetings, meeting)
+		w.meetings[availableRoom.ID] = meeting
 
 		if availableRoom.ID == fromRoom {
 			meeting.sendToRoom(fmt.Sprintf(`Starting wicked meeting W%s in here.`, meeting.ID))
@@ -93,14 +105,14 @@ func (wicked *Wicked) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 			meeting.sendToRoom(fmt.Sprintf(`*** Wicked meeting initiated by @%s%s. Goal: %s`, msg.FromUser.Name, initiatedFrom, meeting.Goal))
 		}
 
-		meeting.sendToRoom(fmt.Sprintf(`Access report at %s/wicked/%s.html`, wicked.bot.Config.WebBaseURL, meeting.ID))
+		meeting.sendToRoom(fmt.Sprintf(`Access report at %s/wicked/%s.html`, w.bot.Config.WebBaseURL, meeting.ID))
 		meeting.setTopic(fmt.Sprintf(`[Running] W%s goal: %s`, meeting.ID, meeting.Goal))
 	} else if strings.HasPrefix(msg.Text, "!join") {
 		match := joinMatcher.FindStringSubmatch(msg.Text)
 		if match == nil {
 			msg.ReplyMention(`invalid !join syntax. Use something like "!join W123"`)
 		} else {
-			for _, meeting := range wicked.meetings {
+			for _, meeting := range w.meetings {
 				if match[1] == meeting.ID {
 					meeting.sendToRoom(fmt.Sprintf(`<@%s> asked to join`, msg.FromUser.Name))
 				}
@@ -117,7 +129,7 @@ continueLogging:
 		return
 	}
 	room := msg.FromChannel.ID
-	meeting, meetingExists := wicked.meetings[room]
+	meeting, meetingExists := w.meetings[room]
 	if !meetingExists {
 		return
 	}
@@ -140,7 +152,7 @@ continueLogging:
 	} else if strings.HasPrefix(msg.Text, "!conclude") {
 		meeting.Conclude()
 		// TODO: kill all waiting goroutines dealing with messaging
-		delete(wicked.meetings, room)
+		delete(w.meetings, room)
 		meeting.sendToRoom("Concluding Wicked meeting, that's all folks!")
 		meeting.setTopic(fmt.Sprintf(`[Concluded] W%s goal: %s`, meeting.ID, meeting.Goal))
 
@@ -161,29 +173,29 @@ continueLogging:
 	meeting.Logs = append(meeting.Logs, newMessage)
 }
 
-func (wicked *Wicked) FindAvailableRoom(fromRoom string) *bawt.Channel {
+func (w *Wicked) FindAvailableRoom(fromRoom string) *bawt.Channel {
 	nextFree := ""
-	for _, confRoom := range wicked.confRooms {
-		_, occupied := wicked.meetings[confRoom]
+	for _, confRoom := range w.confRooms {
+		_, occupied := w.meetings[confRoom]
 		if occupied {
 			continue
 		}
 		if fromRoom == confRoom {
-			return wicked.bot.GetChannelByName(confRoom)
+			return w.bot.GetChannelByName(confRoom)
 		}
 		if nextFree == "" {
 			nextFree = confRoom
 		}
 	}
 
-	return wicked.bot.GetChannelByName(nextFree)
+	return w.bot.GetChannelByName(nextFree)
 }
 
-func (wicked *Wicked) NextMeetingID() string {
+func (w *Wicked) NextMeetingID() string {
 	for i := 1; i < 10000; i++ {
 		strID := fmt.Sprintf("%d", i)
 		taken := false
-		for _, meeting := range wicked.pastMeetings {
+		for _, meeting := range w.pastMeetings {
 			if meeting.ID == strID {
 				taken = true
 				break

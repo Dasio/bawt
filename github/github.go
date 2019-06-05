@@ -1,4 +1,4 @@
-// Package GitHub is a plugin for bawt that interacts with GitHub
+// Package github is a plugin for bawt that interacts with GitHub
 package github
 
 import (
@@ -146,7 +146,5 @@ func (ghclient *Client) DoEventQuery(issueList []IssueItem, repo string, issueCh
 		issueChan <- issue
 
 		time.Sleep(500 * time.Millisecond)
-
 	}
-
 }

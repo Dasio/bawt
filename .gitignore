@@ -1,5 +1,9 @@
 # Our bots!
-/example-bot/example-bot
+build
+config.json
+config.yaml
+bawt.pid
+bawt.bolt.db
 
 # Coverage
 coverage.out

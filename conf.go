@@ -14,18 +14,10 @@ type SlackConfig struct {
 	GeneralChannel string   `json:"general_channel" mapstructure:"general_channel"`
 	TeamDomain     string   `json:"team_domain" mapstructure:"team_domain"`
 	TeamID         string   `json:"team_id" mapstructure:"team_id"`
-	ApiToken       string   `json:"api_token" mapstructure:"api_token"`
+	APIToken       string   `json:"api_token" mapstructure:"api_token"`
 	WebBaseURL     string   `json:"web_base_url" mapstructure:"web_base_url"`
 	DBPath         string   `json:"db_path" mapstructure:"db_path"`
 	Debug          bool
-}
-
-type ChatPluginConfig struct {
-	// Whether to handle the bot's own messages
-	EchoMessages bool
-
-	// Whether to handle messages that are not destined to me
-	OnlyMentions bool
 }
 
 func checkPermission(file string) error {

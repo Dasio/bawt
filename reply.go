@@ -3,18 +3,22 @@ package bawt
 import (
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/nlopes/slack"
+	"github.com/sirupsen/logrus"
 )
 
-// Reply
-//
+type ReplyWithFile struct {
+	*slack.File
+	bot *Bot
+}
+
+// Reply represents a reply to bawt
 type Reply struct {
 	*slack.OutgoingMessage
 	bot *Bot
 }
 
+// AddReaction adds a reaction to a reply
 func (r *Reply) AddReaction(emoji string) *Reply {
 	r.OnAck(func(ev *slack.AckMessage) {
 		go r.bot.Slack.AddReaction(emoji, slack.NewRefToMessage(r.Channel, ev.Timestamp))
@@ -22,8 +26,9 @@ func (r *Reply) AddReaction(emoji string) *Reply {
 	return r
 }
 
+// DeleteAfter deletes a reply after a certain duration
 func (r *Reply) DeleteAfter(duration string) *Reply {
-	timeDur := parseAutodestructDuration("DeleteAfter", duration)
+	timeDur := parseAutodestructDuration("DeleteAfter", duration, r.bot.Logging.Logger)
 
 	r.OnAck(func(ev *slack.AckMessage) {
 		go func() {
@@ -35,6 +40,7 @@ func (r *Reply) DeleteAfter(duration string) *Reply {
 	return r
 }
 
+// ListenReaction listens for reactions
 func (r *Reply) ListenReaction(reactListen *ReactionListener) {
 	r.OnAck(func(ackEv *slack.AckMessage) {
 		listen := reactListen.newListener()
@@ -73,6 +79,8 @@ func (r *Reply) ListenReaction(reactListen *ReactionListener) {
 // With the message_id, you can modify your reply, add reactions to it
 // or delete it.
 func (r *Reply) OnAck(f func(ack *slack.AckMessage)) {
+	log := r.bot.Logging.Logger
+
 	r.bot.Listen(&Listener{
 		ListenDuration: 20 * time.Second,
 		EventHandlerFunc: func(subListen *Listener, event interface{}) {
@@ -113,6 +121,8 @@ func (r *Reply) Updateable() *UpdateableReply {
 // ReplyAck() will be filled with the slack.AckMessage before any
 // event is dispatched to this listener.
 func (r *Reply) Listen(listen *Listener) error {
+	log := r.bot.Logging.Logger
+
 	listen.Bot = r.bot
 
 	err := listen.checkParams()
@@ -129,7 +139,7 @@ func (r *Reply) Listen(listen *Listener) error {
 	return nil
 }
 
-func parseAutodestructDuration(funcName string, duration string) time.Duration {
+func parseAutodestructDuration(funcName string, duration string, log *logrus.Logger) time.Duration {
 	timeDur, err := time.ParseDuration(duration)
 	if err != nil {
 		log.Printf("error: %s called with invalid `duration`: %q, using 1 second instead.\n", funcName, duration)

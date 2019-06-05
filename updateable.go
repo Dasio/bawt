@@ -31,14 +31,17 @@ func (u *UpdateableReply) dispatch() {
 	}
 }
 
+// UpdateSuffix updates a reply with a suffix
 func (u *UpdateableReply) UpdateSuffix(format string, v ...interface{}) {
 	u.updateWithMode(updateSuffix, format, v...)
 }
 
+// UpdatePrefix updates a reply with a prefix
 func (u *UpdateableReply) UpdatePrefix(format string, v ...interface{}) {
 	u.updateWithMode(updatePrefix, format, v...)
 }
 
+// Update updates a reply
 func (u *UpdateableReply) Update(format string, v ...interface{}) {
 	u.updateWithMode(updateWhole, format, v...)
 }

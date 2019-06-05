@@ -10,6 +10,8 @@ import (
 
 func (p *Plugin) listenUpvotes() {
 	p.bot.Listen(&bawt.Listener{
+		Name:        "Recognition",
+		Description: "A fun game that encourages team mates to learn each others faces",
 		EventHandlerFunc: func(_ *bawt.Listener, event interface{}) {
 			react := bawt.ParseReactionEvent(event)
 			if react == nil {

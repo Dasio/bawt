@@ -23,6 +23,8 @@ func (standup *Standup) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: standup.ChatHandler,
+		Name:               "Standup",
+		Description:        "Provides an assistant for running stand up over chat",
 	})
 }
 

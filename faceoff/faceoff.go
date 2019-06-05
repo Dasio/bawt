@@ -35,6 +35,8 @@ func (p *Faceoff) InitPlugin(bot *bawt.Bot) {
 
 	faceoffRE := regexp.MustCompile("^!face[ _-]?off")
 	bot.Listen(&bawt.Listener{
+		Name:           "Faceoff",
+		Description:    "A game which encourages colleagues to get to know eachother",
 		PublicOnly:     true,
 		Matches:        faceoffRE,
 		ListenForEdits: true,
@@ -55,6 +57,8 @@ func (p *Faceoff) InitPlugin(bot *bawt.Bot) {
 	})
 
 	bot.Listen(&bawt.Listener{
+		Name:        "Faceoff",
+		Description: "A game which encourages colleagues to get to know eachother",
 		PrivateOnly: true,
 		Matches:     faceoffRE,
 		MessageHandlerFunc: func(listen *bawt.Listener, msg *bawt.Message) {
@@ -67,6 +71,8 @@ func (p *Faceoff) InitPlugin(bot *bawt.Bot) {
 	})
 
 	bot.Listen(&bawt.Listener{
+		Name:        "Faceoff",
+		Description: "A game which encourages colleagues to get to know eachother",
 		PrivateOnly: true,
 		Matches:     faceoffRE,
 		EventHandlerFunc: func(listen *bawt.Listener, ev interface{}) {

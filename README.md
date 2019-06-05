@@ -1,56 +1,35 @@
-![Build Status](https://travis-ci.com/gopherworks/bawt.svg?branch=master)
+![Build Status](https://travis-ci.com/gopherworks/bawt.svg?branch=master) 
+![Release](https://img.shields.io/github/release/gopherworks/bawt.svg)
+[![GoDoc](https://godoc.org/github.com/gopherworks/bawt?status.svg)](https://godoc.org/github.com/gopherworks/bawt) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/gopherworks/bawt)](https://goreportcard.com/report/github.com/gopherworks/bawt)
+![License](https://img.shields.io/github/license/gopherworks/bawt.svg)
+![Open Issues](https://img.shields.io/github/issues-raw/gopherworks/bawt.svg)
+![Open PRs](https://img.shields.io/github/issues-pr-raw/gopherworks/bawt.svg)
 
-# bawt - A Slack bot in Go
+Bawt
+===
 
-bawt is a Slack bot to do ChatOps and other cool things. bawt was originally developed [here](https://github.com/abourget/slick) and has since been adopted  and sponsored by Capstone :)
+Bawt is a chatops _framework_ rather than a bot in itself, hence, Bawt is distributed as a package and all it takes to start is one file and one function.
 
+Our goal is that bawt is always **easy to start**, **easy to run**, **easy to enhance**
 
-## Features
+**Easy to start.** The single biggest turn off I had when trying out a new project was the amount of time it took me to get started with something meaningful. The plugin footprint is intentionally light yet extensive and why Bawt's core can be started with just two files. We aim to strike a rare balance of extensibility and simplicity.
 
-Supported features:
+**Easy to run.** Bawt is updated via modules and follows [Semantic Versioning (SemVer)](https://semver.org/) so you'll always know what sort of changes await you. Bawt's core code is abstracted into the Messaging API so even when Slack breaks their API's (and they will) you will never notice as a plugin developer.
 
-* Plugin interface for chat messages
-* Plugin-based HTTP handlers
-* Simple API to reply to users
-* Keeps an internal state of channels, users and their state.
-* Listen for Reactions; take actions based on them (like buttons).
-* Simple API to message users privately
-* Simple API to update a previously sent message
-* Simple API to delete bot messages after a given time duration.
-* Easy plugin interface, listeners with criteria such as:
-  * Messages directed to the bot only
-  * Private or public messages
-  * Listens for a duration or until a given `time.Time`
-  * Selectively on a channel, or from a user
-  * Expire listeners and unregister them dynamically
-  * Supports listening for edits or not
-  * Regexp match messages, or Contains checks
-* Built-in KV store for data persistence (backed by BoltDB and JSON serialization)
-* The bot has a mood (_happy_ and _hyper_) which changes randomly.. you can base some decisions on it, to spice up conversations.
-* Supports listening for any Slack events (ChannelCreated, ChannelJoined, EmojiChanged, FileShared, GroupArchived, etc..)
-* A PubSub system to facilitate inter-plugins (or chat-to-web) communications.
+**Easy to enhance.** We want Bawt's code to make sense not just to core developers but to plugin devs as well. That's why Bawt's core is both verbose and descriptive. There's no buried functionality, what you see is what you get.
 
-
-## Stock plugins
-
-1. Recognition: a plugin to recognize your peers (!recognize @user1 for doing an awesome job)
-
-2. Faceoff: a game to learn the names and faces of your colleagues. The code for this one is interesting to learn to build interactive features with `bawt`.
-
-3. Vote: a simple voting plugin to decide where to lunch
-
-4. Funny: a bunch of jokes and memes in reply to some strings in channels.. (inspired by Hubot's jokes)
-
-5. Healthy: a very simple plugin that pokes URLs and reports on their health
-
-6. Deployer: an example plugin to do deployments wth ansible (you'll probably want to roll out your own though).
-
-7. Todo: todo list manager, one per channel
 
 
 ## Local build and install
 
-Try it with:
+### With Modules
+
+```shell
+go get github.com/gopherworks/bawt
+```
+
+### Without Modules
 
 ```shell
 go get github.com/gopherworks/bawt
@@ -61,7 +40,6 @@ go install -v && $GOPATH/bin/example-bot
 There's a Dockerfile and example configuration in the `example-bot` directory.
 
 ## Writing your own plugin
-
 
 Example code to handle deployments:
 
@@ -88,10 +66,3 @@ func listenDeploy() {
 	})
 }
 ```
-
-
-
-
-Take inspiration by looking at the different plugins, like `Funny`,
-`Healthy`, `Storm`, `Deployer`, etc..  Don't forget to update your
-bot's plugins list, like in `example-bot/main.go`

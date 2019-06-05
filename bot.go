@@ -1,4 +1,4 @@
-// Package bawt is a ChatOps framework for Slack
+// Package bawt is a Slack bot framework written in Go
 package bawt
 
 import (
@@ -15,12 +15,14 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/cskr/pubsub"
 	"github.com/nlopes/slack"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-// Bot is the main bawt bot instance. It is passed throughout, and
-// has references to most useful objects.
+// Version is the software version
+var Version string
+
+// Bot connects Bawt's configuration and API
 type Bot struct {
 	// Global bot configuration
 	configFile string
@@ -38,10 +40,11 @@ type Bot struct {
 	Myself            slack.UserDetails
 
 	// Internal handling
-	listeners     []*Listener
-	addListenerCh chan *Listener
-	delListenerCh chan *Listener
-	outgoingMsgCh chan *slack.OutgoingMessage
+	listeners      []*Listener
+	addListenerCh  chan *Listener
+	delListenerCh  chan *Listener
+	outgoingMsgCh  chan *slack.OutgoingMessage
+	outgoingFileCh chan *slack.File
 
 	// Storage
 	DB *bolt.DB
@@ -57,14 +60,15 @@ type Bot struct {
 
 // New returns a new bot instance, initialized with the provided config
 // file. If an empty string is provided as the config file path, bawt
-// searches the working directy and $HOME/.bawt/ for a file called
+// searches the working directory and $HOME/.bawt/ for a file called
 // config.json|toml|yaml instead
 func New(configFile string) *Bot {
 	bot := &Bot{
-		configFile:    configFile,
-		outgoingMsgCh: make(chan *slack.OutgoingMessage, 500),
-		addListenerCh: make(chan *Listener, 500),
-		delListenerCh: make(chan *Listener, 500),
+		configFile:     configFile,
+		outgoingMsgCh:  make(chan *slack.OutgoingMessage, 500),
+		outgoingFileCh: make(chan *slack.File, 500),
+		addListenerCh:  make(chan *Listener, 500),
+		delListenerCh:  make(chan *Listener, 500),
 
 		Users:    make(map[string]slack.User),
 		Channels: make(map[string]Channel),
@@ -81,7 +85,7 @@ func New(configFile string) *Bot {
 	return bot
 }
 
-// Run starts the bot
+// Run loads the config, turns on logging, writes the PID, and loads the plugins.
 func (bot *Bot) Run() {
 	// Config for Slack and logging are read in
 	bot.loadBaseConfig()
@@ -89,8 +93,10 @@ func (bot *Bot) Run() {
 	// Configure logging
 	err := bot.setupLogging()
 	if err != nil {
-		log.Fatal("Error setting up logging.")
+		bot.Logging.Logger.Fatal("Error setting up logging.")
 	}
+
+	log := bot.Logging.Logger
 
 	// Write PID
 	err = bot.writePID()
@@ -143,7 +149,7 @@ func (bot *Bot) Run() {
 
 	initChatPlugins(bot)
 
-	bot.Slack = slack.New(bot.Config.ApiToken)
+	bot.Slack = slack.New(bot.Config.APIToken)
 	bot.Slack.SetDebug(bot.Config.Debug)
 
 	rtm := bot.Slack.NewRTM()
@@ -184,6 +190,7 @@ func (bot *Bot) writePID() error {
 //
 // Explore the Listener for more details.
 func (bot *Bot) Listen(listen *Listener) error {
+	log := bot.Logging.Logger
 	listen.Bot = bot
 
 	err := listen.checkParams()
@@ -226,6 +233,11 @@ func (bot *Bot) ListenReaction(item string, reactListen *ReactionListener) {
 	bot.Listen(listen)
 }
 
+// Listeners returns an array of active listeners
+func (bot *Bot) Listeners() []*Listener {
+	return bot.listeners
+}
+
 func (bot *Bot) addListener(listen *Listener) {
 	listen.setupChannels()
 	if listen.isManaged() {
@@ -234,22 +246,12 @@ func (bot *Bot) addListener(listen *Listener) {
 	bot.addListenerCh <- listen
 }
 
-func (bot *Bot) Notify(room, color, format, msg string, notify bool) error {
-	log.Println("DEPRECATED. Please use the Slack API with .PostMessage")
-	// bot.api.PostMessage(room, msg, slack.PostMessageParameters{
-	// 	Attachments: []slack.Attachment{
-	// 		{
-	// 			Color: color,
-	// 			Text: msg,
-	// 		},
-	// 	},
-	// })
-	return nil
-}
-
 func (bot *Bot) setupHandlers() {
+	log := bot.Logging.Logger
+
 	go bot.replyHandler()
 	go bot.messageHandler()
+
 	log.Println("Bot ready")
 }
 
@@ -261,6 +263,8 @@ func (bot *Bot) cacheUsers(users []slack.User) {
 }
 
 func (bot *Bot) cacheChannels(channels []slack.Channel, groups []slack.Group, ims []slack.IM) {
+	log := bot.Logging.Logger
+
 	log.Debugf("Channels: %v", len(channels))
 	log.Debugf("Groups: %v", len(groups))
 	log.Debugf("DM's: %v", len(ims))
@@ -279,6 +283,7 @@ func (bot *Bot) cacheChannels(channels []slack.Channel, groups []slack.Group, im
 }
 
 func (bot *Bot) loadBaseConfig() {
+	log := bot.Logging.Logger
 
 	bot.readInConfig() // Find and parse the config file
 
@@ -299,6 +304,7 @@ func (bot *Bot) loadBaseConfig() {
 // readInConfig reads the config file, unmarshals the given format (JSON, YAML or TOML)
 // and makes the result available for later use in LoadConfig()
 func (bot *Bot) readInConfig() {
+	log := bot.Logging.Logger
 
 	// Use viper to find a default config file, or open the provided file is set
 	if bot.configFile == "" {
@@ -322,6 +328,7 @@ func (bot *Bot) readInConfig() {
 
 // LoadConfig populates a given struct with the values from the config file
 func (bot *Bot) LoadConfig(config interface{}) (err error) {
+	log := bot.Logging.Logger
 
 	err = viper.Unmarshal(&config)
 	if err != nil {
@@ -347,10 +354,12 @@ func (bot *Bot) replyHandler() {
 
 // SendToChannel sends a message to a given channel
 func (bot *Bot) SendToChannel(channelName string, message string) *Reply {
+	log := bot.Logging.Logger
+
 	channel := bot.GetChannelByName(channelName)
 
 	if channel == nil {
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Type":    "ChannelNotFound",
 			"Channel": channelName,
 		}).Error("Error sending message to channel.")
@@ -358,7 +367,7 @@ func (bot *Bot) SendToChannel(channelName string, message string) *Reply {
 		return nil
 	}
 
-	log.WithFields(log.Fields{
+	log.WithFields(logrus.Fields{
 		"Type":    "SendingMessage",
 		"Channel": channelName,
 		"Message": message,
@@ -367,10 +376,33 @@ func (bot *Bot) SendToChannel(channelName string, message string) *Reply {
 	return bot.SendOutgoingMessage(message, channel.ID)
 }
 
+// UploadFile can be used to send a message with a file
+func (bot *Bot) UploadFile(p FileUploadParameters) *ReplyWithFile {
+	log := bot.Logging.Logger
+
+	if p.Content != "" {
+		log.Debug("New snippet detected.")
+	} else if p.Reader != nil {
+		log.Debug("New file upload detected.")
+	} else if p.File != "" {
+		log.Debug("Alternative file upload process used. New file upload detected.")
+	}
+
+	// We convert our local FileUploadParameters to slack's
+	params := slack.FileUploadParameters(p)
+
+	f, _ := bot.Slack.UploadFile(params)
+	bot.outgoingFileCh <- f
+
+	return &ReplyWithFile{f, bot}
+}
+
 // SendOutgoingMessage schedules the message for departure and returns
 // a Reply which can be listened on. See type `Reply`.
 func (bot *Bot) SendOutgoingMessage(text string, to string) *Reply {
-	log.WithFields(log.Fields{
+	log := bot.Logging.Logger
+
+	log.WithFields(logrus.Fields{
 		"Type":      "SendingMessage",
 		"Recipient": to,
 		"Message":   text,
@@ -384,9 +416,11 @@ func (bot *Bot) SendOutgoingMessage(text string, to string) *Reply {
 
 // SendPrivateMessage sends a message to a user
 func (bot *Bot) SendPrivateMessage(username, message string) *Reply {
+	log := bot.Logging.Logger
+
 	user := bot.GetUser(username)
 	if user == nil {
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Type":      "UserDoesNotExist",
 			"Recipient": username,
 			"Message":   message,
@@ -397,7 +431,7 @@ func (bot *Bot) SendPrivateMessage(username, message string) *Reply {
 
 	imChannel := bot.OpenIMChannelWith(user)
 	if imChannel == nil {
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Type":         "IMChannelDoesNotExist",
 			"Recipient":    user.Name,
 			"Recipient ID": user.ID,
@@ -407,7 +441,7 @@ func (bot *Bot) SendPrivateMessage(username, message string) *Reply {
 		return nil
 	}
 
-	log.WithFields(log.Fields{
+	log.WithFields(logrus.Fields{
 		"Type":       "SendingPrivateMessage",
 		"IM Channel": imChannel.ID,
 		"Message":    message,
@@ -463,17 +497,19 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	var client = bot.Slack
 	//var reaction interface{}
 
+	log := bot.Logging.Logger
+
 	switch ev := event.Data.(type) {
 	/**
 	 * Connection handling...
 	 */
 	case *slack.LatencyReport:
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Type":    "LatencyReport",
 			"Latency": ev.Value,
 		}).Debug("Latency Report.")
 	case *slack.RTMError:
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Type":      "RTMError",
 			"ErrorCode": ev.Code,
 			"Message":   ev.Msg,
@@ -516,19 +552,22 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		}
 
 	case *slack.DisconnectedEvent:
-		log.Println("Bot disconnected")
+		log.Warn("Bot disconnected")
+
+	case *slack.InvalidAuthEvent:
+		log.Warn("Received InvalidAuthEvent")
 
 	case *slack.ConnectingEvent:
-		log.Printf("Bot connecting, connection_count=%d, attempt=%d", ev.ConnectionCount, ev.Attempt)
+		log.Infof("Bot connecting, connection_count=%d, attempt=%d", ev.ConnectionCount, ev.Attempt)
 
 	case *slack.HelloEvent:
-		log.Println("Got a HELLO from websocket")
+		log.Info("Got a HELLO from websocket")
 
 	/**
 	 * Message dispatch and handling
 	 */
 	case *slack.MessageEvent:
-		log.WithFields(log.Fields{
+		log.WithFields(logrus.Fields{
 			"Message": ev,
 		}).Debug("Message received.")
 
@@ -564,16 +603,13 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			}
 		}
 
-		// We do some heavy logging here because this is troublesome
-		// to find when it breaks and Slack breaks it by deprecating API's
-
-		// Find FromUser by ID if possible, or log error if it's not a bot message
+		// Verify the User and Channel maps. If they're broken we cannot reply specifically to a user.
 		user, ok := bot.Users[userID]
 		if ok {
 			log.Debug("User map is ok.")
 			msg.FromUser = &user
-		} else if ev.Msg.SubType != "bot_message" {
-			log.WithFields(log.Fields{
+		} else if ev.Msg.SubType != "bot_message" { // Bot users don't get UID's so don't put them in the user map
+			log.WithFields(logrus.Fields{
 				"Type":  "BrokenUserMap",
 				"Users": len(bot.Users),
 				"User":  userID,
@@ -585,7 +621,7 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			log.Debug("Channel map is ok.")
 			msg.FromChannel = &channel
 		} else {
-			log.WithFields(log.Fields{
+			log.WithFields(logrus.Fields{
 				"Type":     "BrokenChannelMap",
 				"Channels": len(bot.Channels),
 			}).Error("Channel map is broken.")
@@ -596,7 +632,7 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 
 	case *slack.PresenceChangeEvent:
 		user := bot.Users[ev.User]
-		log.Printf("User %q is now %q", user.Name, ev.Presence)
+		log.Infof("User %q is now %q", user.Name, ev.Presence)
 		user.Presence = ev.Presence
 
 	// TODO: manage im_open, im_close, and im_created ?
@@ -713,7 +749,7 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		log.Warnf("ConnectionErrorEvent: %s", ev)
 
 	default:
-		log.Warnf("Event: %T", ev)
+		log.Debugf("Unhandled Event: %T", ev)
 	}
 
 	// Dispatch listeners
@@ -783,7 +819,7 @@ func (bot *Bot) OpenIMChannelWith(user *slack.User) *Channel {
 		return dmChannel
 	}
 
-	log.Printf("Opening a new IM conversation with %q (%s)", user.ID, user.Name)
+	logrus.Printf("Opening a new IM conversation with %q (%s)", user.ID, user.Name)
 	_, _, chanID, err := bot.Slack.OpenIMChannel(user.ID)
 	if err != nil {
 		return nil

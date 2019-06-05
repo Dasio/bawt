@@ -28,6 +28,8 @@ func (vote *Vote) InitPlugin(bot *bawt.Bot) {
 	bot.Listen(&bawt.Listener{
 		PublicOnly:         true,
 		MessageHandlerFunc: vote.voteHandler,
+		Name:               "Vote",
+		Description:        "Provides an interface for voting",
 	})
 }
 

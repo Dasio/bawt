@@ -23,17 +23,18 @@ func (p *DeployParams) ParsedTags() string {
 	if tags == "" {
 		tags = "updt_streambed"
 	}
+
 	return tags
 }
 
 // ParsedDeploymentBranch returns the default, or a user-specified branch name
 // used in the `deployment/` repo.
-func (p *DeployParams) ParsedDeploymentBranch(default_branch string) string {
+func (p *DeployParams) ParsedDeploymentBranch(branch string) string {
 	if p.DeploymentBranch == "" {
-		return default_branch
-	} else {
-		return p.DeploymentBranch
+		return branch
 	}
+
+	return p.DeploymentBranch
 }
 
 func (p *DeployParams) String() string {

@@ -30,6 +30,9 @@ type Message struct {
 	Match []string
 }
 
+// FileUploadParameters are all the parameters needed to upload a file
+type FileUploadParameters slack.FileUploadParameters
+
 // IsPrivate determines if a message is private or not
 func (msg *Message) IsPrivate() bool {
 	return strings.HasPrefix(msg.Channel, "D")
@@ -134,6 +137,15 @@ func (msg *Message) ReplyMention(text string, v ...interface{}) *Reply {
 		prefix = fmt.Sprintf("<@%s> ", msg.FromUser.Name)
 	}
 	return msg.Reply(fmt.Sprintf("%s%s", prefix, text), v...)
+}
+
+// ReplyWithFile replies with a snippet or an attached file
+func (msg *Message) ReplyWithFile(p FileUploadParameters) *ReplyWithFile {
+	// https://godoc.org/github.com/nlopes/slack#FileUploadParameters
+	// Content means it's a snippet
+	// Reader means it's a large file
+	// Apparently File also works
+	return msg.bot.UploadFile(p)
 }
 
 // String returns a message with field:value as a string

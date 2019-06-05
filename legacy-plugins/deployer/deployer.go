@@ -63,6 +63,8 @@ func (dep *Deployer) InitPlugin(bot *bawt.Bot) {
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: dep.ChatHandler,
 		MentionsMeOnly:     true,
+		Name:               "Deployer",
+		Description:        "An app for deploying artifacts",
 	})
 }
 
@@ -102,25 +104,28 @@ func (dep *Deployer) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 
 	if match := deployFormat.FindStringSubmatch(msg.Text); match != nil {
 		if dep.lockedBy != "" {
-			msg.Reply(fmt.Sprintf("Deployment was locked by %s.  Unlock with '%s, unlock deployment' if they're OK with it.", dep.lockedBy, dep.bot.Config.Nickname))
+			msg.Reply("Deployment was locked by %s.  Unlock with '%s, unlock deployment' if they're OK with it.", dep.lockedBy, dep.bot.Config.Nickname)
 			return
 		}
+
 		if dep.runningJob != nil {
 			params := dep.runningJob.params
-			msg.Reply(fmt.Sprintf("@%s Deploy currently running: %s", msg.FromUser.Name, params))
+			msg.Reply("@%s Deploy currently running: %s", msg.FromUser.Name, params)
 			return
-		} else {
-			params := &DeployParams{
-				Environment:      match[3],
-				Branch:           match[2],
-				Tags:             match[8],
-				DeploymentBranch: match[5],
-				InitiatedBy:      msg.FromUser.RealName,
-				From:             "chat",
-				initiatedByChat:  msg,
-			}
-			go dep.handleDeploy(params)
 		}
+
+		params := &DeployParams{
+			Environment:      match[3],
+			Branch:           match[2],
+			Tags:             match[8],
+			DeploymentBranch: match[5],
+			InitiatedBy:      msg.FromUser.RealName,
+			From:             "chat",
+			initiatedByChat:  msg,
+		}
+
+		go dep.handleDeploy(params)
+
 		return
 
 	} else if msg.Contains("cancel deploy") {
@@ -139,29 +144,29 @@ func (dep *Deployer) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 		}
 		return
 	} else if msg.Contains("in the pipe") {
-		url := dep.getCompareUrl("prod", dep.config.DefaultStreambedBranch)
+		url := dep.getCompareURL("prod", dep.config.DefaultStreambedBranch)
 		mention := msg.FromUser.Name
 		if url != "" {
-			msg.Reply(fmt.Sprintf("@%s in %s branch, waiting to reach prod: %s", mention, dep.config.DefaultStreambedBranch, url))
+			msg.Reply("@%s in %s branch, waiting to reach prod: %s", mention, dep.config.DefaultStreambedBranch, url)
 		} else {
-			msg.Reply(fmt.Sprintf("@%s couldn't get current revision on prod", mention))
+			msg.Reply("@%s couldn't get current revision on prod", mention)
 		}
 	} else if msg.Contains("unlock deploy") {
 		dep.lockedBy = ""
-		msg.Reply(fmt.Sprintf("Deployment is now unlocked."))
-		bot.Notify(dep.config.AnnounceRoom, "purple", "text", fmt.Sprintf("%s has unlocked deployment", msg.FromUser.Name), true)
+		msg.Reply("Deployment is now unlocked.")
+		msg.Reply("%s has unlocked deployment", msg.FromUser.Name)
 	} else if msg.Contains("lock deploy") {
 		dep.lockedBy = msg.FromUser.Name
-		msg.Reply(fmt.Sprintf("Deployment is now locked.  Unlock with '%s, unlock deployment' ASAP!", dep.bot.Config.Nickname))
-		bot.Notify(dep.config.AnnounceRoom, "purple", "text", fmt.Sprintf("%s has locked deployment", dep.lockedBy), true)
+		msg.Reply("Deployment is now locked.  Unlock with '%s, unlock deployment' ASAP!", dep.bot.Config.Nickname)
+		msg.Reply("%s has locked deployment", dep.lockedBy)
 	} else if msg.Contains("deploy") || msg.Contains("push to") {
 		mention := dep.bot.Config.Nickname
-		msg.Reply(fmt.Sprintf(`Usage: %s, [please|insert reverence] deploy [<branch-name>] to <environment> [using <deployment-branch>][, tags: <ansible-playbook tags>, ..., ...]
+		msg.Reply(`Usage: %s, [please|insert reverence] deploy [<branch-name>] to <environment> [using <deployment-branch>][, tags: <ansible-playbook tags>, ..., ...]
 examples: %s, please deploy to prod
 %s, deploy thing-to-test to stage
 %s, deploy complicated-thing to stage, tags: updt_streambed, blow_up_the_sun
 other commands: %s, what's in the pipe? - show what's waiting to be deployed to prod
-%s, lock deployment - prevent deployment until it's unlocked`, mention, mention, mention, mention, mention, mention))
+%s, lock deployment - prevent deployment until it's unlocked`, mention, mention, mention, mention, mention, mention)
 	}
 }
 
@@ -209,11 +214,12 @@ func (dep *Deployer) handleDeploy(params *DeployParams) {
 	//
 
 	bot := dep.bot
-	bot.Notify(dep.config.AnnounceRoom, "purple", "text", fmt.Sprintf("[deployer] Launching: %s", params), true)
+	m := fmt.Sprintf("[deployer] Launching: %s", params)
+	bot.SendToChannel(dep.config.AnnounceRoom, m)
 	dep.replyPersonnally(params, bot.WithMood("deploying, my friend", "deploying, yyaaahhhOooOOO!"))
 
 	if params.Environment == "prod" {
-		url := dep.getCompareUrl(params.Environment, params.Branch)
+		url := dep.getCompareURL(params.Environment, params.Branch)
 		if url != "" {
 			dep.pubLine(fmt.Sprintf("[deployer] Compare what is being pushed: %s", url))
 		}
@@ -306,7 +312,7 @@ func (dep *Deployer) replyPersonnally(params *DeployParams, msg string) {
 	params.initiatedByChat.ReplyMention(msg)
 }
 
-func (dep *Deployer) getCompareUrl(env, branch string) string {
+func (dep *Deployer) getCompareURL(env, branch string) string {
 	if dep.internal == nil {
 		return ""
 	}

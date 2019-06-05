@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="description" content="a ChatOps Slackbot written in Go">
+
+
+    <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
+<link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
+    <title>Plugins :: Documentation for Hugo Learn Theme</title>
+
+    
+    <link href="/bawt/css/nucleus.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/fontawesome-all.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/hybrid.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/featherlight.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/perfect-scrollbar.min.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/auto-complete.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/theme.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/hugo-theme.css?1559711070" rel="stylesheet">
+    
+      <link href="/bawt/css/theme-blue.css?1559711070" rel="stylesheet">
+    
+
+    <script src="/bawt/js/jquery-2.x.min.js?1559711070"></script>
+
+    <style type="text/css">
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/bawt/developers/plugins/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <img src="/bawt/img/bawt-white.svg" />
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="text" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-close"></i></span>
+</div>
+
+<script type="text/javascript" src="/bawt/js/lunr.min.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/auto-complete.js?1559711070"></script>
+<script type="text/javascript">
+    
+        var baseurl = "https:\/\/capstonelabs.github.io\/bawt\/";
+    
+</script>
+<script type="text/javascript" src="/bawt/js/search.js?1559711070"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/getting-started/" title="Getting Started" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/getting-started/">
+          Getting Started
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/bawt/developers/">
+          Developers
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/plugins/" title="Plugins" class="dd-item 
+        parent
+        active
+        
+        ">
+      <a href="/bawt/developers/plugins/">
+          Plugins
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/10-datastores/" title="Datastores" class="dd-item ">
+        <a href="/bawt/developers/10-datastores/">
+        Datastores
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/press-kit/" title="Press Kit" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/press-kit/">
+          Press Kit
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/code-of-conduct/" title="Code of Conduct" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/code-of-conduct/">
+          Code of Conduct
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+      <section id="shortcuts">
+        <h3>More</h3>
+        <ul>
+          
+              <li> 
+                  <a class="padding" href="https://github.com/gopherworks/bawt"><i class='fab fa-fw fa-github'></i> Github repo</a>
+              </li>
+          
+              <li> 
+                  <a class="padding" href="https://gohugo.io/"><i class='fas fa-fw fa-bookmark'></i> Hugo Documentation</a>
+              </li>
+          
+        </ul>
+      </section>
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <p>Built with <a href="https://github.com/matcornic/hugo-theme-learn"><i class="fas fa-heart"></i></a> from <a href="http://getgrav.org">Grav</a> and <a href="http://gohugo.io/">Hugo</a></p>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/plugins/_index.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > Plugins
+          
+         
+          
+         
+          
+           
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#interfaces">Interfaces</a>
+<ul>
+<li><a href="#the-base-interface">The base interface</a></li>
+<li><a href="#the-chat-interface">The chat interface</a></li>
+<li><a href="#the-webserver-interface">The webserver interface</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+
+        
+        <div id="body-inner">
+          
+            <h1>Plugins</h1>
+          
+
+        
+
+
+
+
+<p>All of Bawt&rsquo;s plugins start with a single <code>struct</code>. This struct stores configuration data that will be unmarshaled to it during the init process.</p>
+
+<p>At a minimum a field called <code>bot</code> which is a pointer of type <code>bawt.Bot</code>. This field is required in order to create your first listener, so don&rsquo;t forget it!</p>
+
+<pre><code class="language-go">type Help struct {
+	bot *bawt.Bot
+}
+</code></pre>
+
+<p>We&rsquo;ll then use Go&rsquo;s built in <code>init()</code> function to register the plugin at runtime:</p>
+
+<pre><code class="language-go">func init() {
+	bawt.RegisterPlugin(&amp;Help{})
+}
+</code></pre>
+
+<p>Now our plugin is registered, but it still needs to be initialized.</p>
+
+<h2 id="interfaces">Interfaces</h2>
+
+<p>Bawt&rsquo;s plugins must only satisfy an <code>interface</code>, which in Go means that we must simply adhere to a certain minimal method structure.</p>
+
+<p>We do some polymorphism here, but it&rsquo;s not really complicated, so stay with us!</p>
+
+<h3 id="the-base-interface">The base interface</h3>
+
+<p>The base interface is <code>Plugin</code> which is satisfied by a struct with no methods.</p>
+
+<h3 id="the-chat-interface">The chat interface</h3>
+
+<p>The <code>PluginInitializer</code> interface is satisifed by a method of <code>InitPlugin(*Bot)</code>. In the context of our <code>Help</code> plugin, let&rsquo;s look how we&rsquo;d use that!</p>
+
+<pre><code class="language-go">// InitPlugin initializes the plugin
+func (h *Help) InitPlugin(bot *bawt.Bot) {
+	h.bot = bot
+
+	h.listenHelp()
+}
+
+func (h *Help) listenHelp() {
+	h.bot.Listen(&amp;bawt.Listener{
+		Matches:            regexp.MustCompile(`^!help.*`),
+		MessageHandlerFunc: h.handleHelp,
+	})
+}
+
+func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
+	// Do some things
+	msg.Reply(&quot;Got your message!&quot;)
+}
+</code></pre>
+
+<p>Messages are sent to registered listeners as they are received and if the listener regex matches then we execute the <code>MessageHandlerFunc</code> which takes two arguments supplied by Bawt&rsquo;s core: <code>Listener</code> and <code>Message</code>.</p>
+
+<p>While <code>Listener</code> has some useful exported methods, the <code>Message</code> type comes with methods for replying in various ways and will be what a majority of developers will be interacting with.</p>
+
+<h3 id="the-webserver-interface">The webserver interface</h3>
+
+<p>Bawt can extend itself to listen to web requests.</p>
+
+<p>The web server plugin interface is fully functional, however, not fully documented. It is currently under development and will receive a lot better documentation in the future :)</p>
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+        
+            <a class="nav nav-prev" href="/bawt/developers/" title="Developers"> <i class="fas fa-chevron-left"></i></a>
+        
+        
+            <a class="nav nav-next" href="/bawt/developers/10-datastores/" title="Datastores" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/bawt/js/clipboard.min.js?1559711070"></script>
+    <script src="/bawt/js/perfect-scrollbar.min.js?1559711070"></script>
+    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1559711070"></script>
+    <script src="/bawt/js/jquery.sticky.js?1559711070"></script>
+    <script src="/bawt/js/featherlight.min.js?1559711070"></script>
+    <script src="/bawt/js/html5shiv-printshiv.min.js?1559711070"></script>
+    <script src="/bawt/js/highlight.pack.js?1559711070"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/bawt/js/modernizr.custom.71422.js?1559711070"></script>
+    <script src="/bawt/js/learn.js?1559711070"></script>
+    <script src="/bawt/js/hugo-learn.js?1559711070"></script>
+
+    <link href="/bawt/mermaid/mermaid.css?1559711070" type="text/css" rel="stylesheet" />
+    <script src="/bawt/mermaid/mermaid.js?1559711070"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    
+
+  </body>
+</html>

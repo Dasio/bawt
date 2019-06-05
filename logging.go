@@ -1,29 +1,30 @@
 package bawt
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // Logging contains the configuration for logrus
 type Logging struct {
-	Level string `json:"level" mapstructure:"level"`
-	Type  string `json:"type" mapstructure:"type"`
+	Logger *logrus.Logger
+	Level  string `json:"level" mapstructure:"level"`
+	Type   string `json:"type" mapstructure:"type"`
 }
 
 // getLoggingConfig return the corresponding formatter and level for logging.
-func getLoggingConfig(bot *Bot) (log.Formatter, log.Level) {
-	var f log.Formatter
+func getLoggingConfig(bot *Bot) (logrus.Formatter, logrus.Level) {
+	var f logrus.Formatter
 
 	switch bot.Logging.Type {
 	case "json":
-		f = &log.JSONFormatter{}
+		f = &logrus.JSONFormatter{}
 	default:
-		f = &log.TextFormatter{}
+		f = &logrus.TextFormatter{}
 	}
 
-	l, err := log.ParseLevel(bot.Logging.Level)
+	l, err := logrus.ParseLevel(bot.Logging.Level)
 	if err != nil {
-		l = log.InfoLevel
+		l = logrus.InfoLevel
 	}
 	return f, l
 }
@@ -31,7 +32,11 @@ func getLoggingConfig(bot *Bot) (log.Formatter, log.Level) {
 // setupLogging choose the config and setup the logging.
 func (bot *Bot) setupLogging() error {
 	formatter, level := getLoggingConfig(bot)
+	bot.Logging.Logger = logrus.New()
+	log := bot.Logging.Logger
+
 	log.SetFormatter(formatter)
 	log.SetLevel(level)
+	
 	return nil
 }

@@ -51,6 +51,8 @@ func (funny *Funny) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: funny.ChatHandler,
+		Name:               "Funny",
+		Description:        "An app that makes jokes about a certain subject",
 	})
 }
 
@@ -59,6 +61,8 @@ func (funny *Funny) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 
 	if msg.Contains("mama") {
 		listen.Bot.Listen(&bawt.Listener{
+			Name:           "Funny",
+			Description:    "An app that makes jokes about a certain subject",
 			ListenDuration: time.Duration(10 * time.Second),
 			MessageHandlerFunc: func(listen *bawt.Listener, msg *bawt.Message) {
 				if strings.Contains(msg.Text, "papa") {
@@ -95,6 +99,8 @@ func (funny *Funny) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 		} else if msg.Contains("how are you") && msg.MentionsMe {
 			msg.ReplyMention(bot.WithMood("good, and you ?", "I'm wild today!! wadabout you ?"))
 			bot.Listen(&bawt.Listener{
+				Name:           "Funny",
+				Description:    "An app that makes jokes about a certain subject",
 				ListenDuration: 60 * time.Second,
 				FromUser:       msg.FromUser,
 				FromChannel:    msg.FromChannel,

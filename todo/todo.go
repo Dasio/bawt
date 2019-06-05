@@ -17,14 +17,32 @@ func (p *Plugin) listenTodo() {
 	p.bot.Listen(&bawt.Listener{
 		Matches:            regexp.MustCompile(`^!todo.*`),
 		MessageHandlerFunc: p.handleTodo,
+		Name:               "To Do",
+		Description:        "Keeps a tab of all your to do's!",
+		Commands: []bawt.Command{
+			{
+				Usage:    "!todo",
+				HelpText: "Displays a list of tasks",
+			},
+			{
+				Usage:    "!todo add <some text>",
+				HelpText: "Displays a list of tasks",
+			},
+			{
+				Usage:    "!todo scratch <id>",
+				HelpText: "Removes a task",
+			},
+			{
+				Usage:    "!todo append <id> <some text>",
+				HelpText: "Adds to the end of a task",
+			},
+		},
 	})
 }
 
 func (p *Plugin) handleTodo(listen *bawt.Listener, msg *bawt.Message) {
-
 	idFormat := regexp.MustCompile(`^[a-z]{2}$`)
-	match := msg.Match
-	parts := strings.Split(match[0], " ")
+	parts := strings.Split(msg.Match[0], " ")
 	if len(parts) == 1 {
 		p.listTasks(msg)
 		return
@@ -94,8 +112,8 @@ func (p *Plugin) createTask(msg *bawt.Message, content string) {
 	task := &Task{
 		ID:        id,
 		CreatedAt: time.Now(),
-		// CreatedBy: msg.FromUser.ID,
-		Text: []string{content},
+		CreatedBy: msg.FromUser.ID,
+		Text:      []string{content},
 	}
 	todo = append(todo, task)
 	p.store.Put(msg.Channel, todo)

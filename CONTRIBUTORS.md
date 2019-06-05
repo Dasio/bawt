@@ -35,10 +35,12 @@ bawt contributors
     * N/A
 * Marc-Antoine Ross 
     * N/A
-* **[Matt Ouille](https://github.com/mattouille)**
+* [Matt Ouille](https://github.com/mattouille)
     * Organized Hacktoberfest 2018
     * Participated in Hacktoberfest 2018
     * Migrated deprecated messaging API
+    * Hygiene effort for 2019
+    * New Listener/Plugin API
 * Ruben de Vries 
     * N/A
 * ben postlethwaite

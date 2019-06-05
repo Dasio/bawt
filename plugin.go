@@ -3,8 +3,6 @@ package bawt
 import (
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/nlopes/slack"
@@ -16,6 +14,12 @@ import (
 
 // Plugin describes the generic bot plugin
 type Plugin interface{}
+
+// Command is a command the bot is capable of understanding
+type Command struct {
+	Usage    string
+	HelpText string
+}
 
 // PluginInitializer describes the interface is used to check which plugins
 // can be initialized during plugin initalization initChatPlugins
@@ -83,6 +87,8 @@ func initWebServer(bot *Bot, enabledPlugins []string) {
 }
 
 func initWebPlugins(bot *Bot) {
+	log := bot.Logging.Logger
+	// If the WebServer isn't configured then don't load WebPlugins
 	if bot.WebServer == nil {
 		return
 	}
@@ -101,6 +107,5 @@ func initWebPlugins(bot *Bot) {
 			}
 			webServerAuth.InitWebServerAuth(bot, bot.WebServer)
 		}
-
 	}
 }

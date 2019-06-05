@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// InitWebPlugin is required by the WebPlugin API
 func (dep *Deployer) InitWebPlugin(bot *bawt.Bot, privRouter *mux.Router, pubRouter *mux.Router) {
 	privRouter.Handle("/plugins/deployer.ws", websocket.Handler(dep.websocketManager))
 }
@@ -32,7 +33,6 @@ func (dep *Deployer) websocketManager(ws *websocket.Conn) {
 	// Send anything from PubSub to this ws connection, until closed
 	// We'll read from PubSub populating ansible output on "standup"
 	// and push to any web user
-
 }
 
 func (dep *Deployer) websocketReader(ws *websocket.Conn) {

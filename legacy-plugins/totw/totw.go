@@ -50,6 +50,8 @@ func (totw *Totw) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: totw.ChatHandler,
+		Name:               "Tech of the week",
+		Description:        "A weird game",
 	})
 }
 

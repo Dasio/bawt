@@ -53,6 +53,7 @@ func (bugger *Bugger) makeBugReporter(days int) (reporter bugReporter) {
 	return
 }
 
+// InitPlugin is a required part of the Plugin API
 func (bugger *Bugger) InitPlugin(bot *bawt.Bot) {
 
 	/*
@@ -72,6 +73,9 @@ func (bugger *Bugger) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: bugger.ChatHandler,
+		Name:               "Bugger",
+		Description:        "Keeps track of bugs on GitHub",
+		Commands:           []bawt.Command{},
 	})
 
 }

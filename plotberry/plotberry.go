@@ -42,6 +42,8 @@ func (plotberry *PlotBerry) InitPlugin(bot *bawt.Bot) {
 
 	bot.Listen(&bawt.Listener{
 		MessageHandlerFunc: plotberry.ChatHandler,
+		Name:               "Plotberry",
+		Description:        "Provides an interface for watching a Plotly chart",
 	})
 }
 

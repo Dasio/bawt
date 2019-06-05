@@ -6,6 +6,7 @@ import (
 	"github.com/nlopes/slack"
 )
 
+// ReactionListener listens for reactions and changes in reactions
 type ReactionListener struct {
 	ListenUntil    time.Time
 	ListenDuration time.Duration
@@ -19,50 +20,54 @@ type ReactionListener struct {
 	listener *Listener
 }
 
-func (reactListen *ReactionListener) newListener() *Listener {
+func (rl *ReactionListener) newListener() *Listener {
 	newListen := &Listener{}
-	if !reactListen.ListenUntil.IsZero() {
-		newListen.ListenUntil = reactListen.ListenUntil
+	if !rl.ListenUntil.IsZero() {
+		newListen.ListenUntil = rl.ListenUntil
 	}
-	if reactListen.ListenDuration != time.Duration(0) {
-		newListen.ListenDuration = reactListen.ListenDuration
+	if rl.ListenDuration != time.Duration(0) {
+		newListen.ListenDuration = rl.ListenDuration
 	}
-	if reactListen.TimeoutFunc != nil {
+	if rl.TimeoutFunc != nil {
 		newListen.TimeoutFunc = func(listen *Listener) {
-			reactListen.TimeoutFunc(reactListen)
+			rl.TimeoutFunc(rl)
 		}
 	}
-	reactListen.listener = newListen
+	rl.listener = newListen
 
 	return newListen
 }
 
-func (listen *ReactionListener) filterReaction(re *ReactionEvent) bool {
-	if listen.Emoji != "" && re.Emoji != listen.Emoji {
+func (rl *ReactionListener) filterReaction(re *ReactionEvent) bool {
+	if rl.Emoji != "" && re.Emoji != rl.Emoji {
 		return false
 	}
-	if listen.FromUser != nil && re.User != listen.FromUser.ID {
+	if rl.FromUser != nil && re.User != rl.FromUser.ID {
 		return false
 	}
-	if int(listen.Type) != 0 && re.Type != listen.Type {
+	if int(rl.Type) != 0 && re.Type != rl.Type {
 		return false
 	}
 	return true
 }
 
-func (listen *ReactionListener) Close() {
-	listen.listener.Close()
+// Close closes the connection
+func (rl *ReactionListener) Close() {
+	rl.listener.Close()
 }
 
-func (listen *ReactionListener) ResetNewDuration(d time.Duration) {
-	listen.listener.ListenDuration = d
-	listen.listener.ResetDuration()
+// ResetNewDuration resets the duration timer and creates a new duration
+func (rl *ReactionListener) ResetNewDuration(d time.Duration) {
+	rl.listener.ListenDuration = d
+	rl.listener.ResetDuration()
 }
 
-func (listen *ReactionListener) ResetDuration() {
-	listen.listener.ResetDuration()
+// ResetDuration resets the duration timer
+func (rl *ReactionListener) ResetDuration() {
+	rl.listener.ResetDuration()
 }
 
+// ReactionEvent is a reaction event from Slack
 type ReactionEvent struct {
 	// Type can be `ReactionAdded` or `ReactionRemoved`
 	Type      reaction
@@ -99,6 +104,7 @@ const ReactionAdded = reaction(2)
 // ReactionRemoved is the flipside of `ReactionAdded`.
 const ReactionRemoved = reaction(1)
 
+// ParseReactionEvent parses and normalizes reaction events to ReactionEvents
 func ParseReactionEvent(event interface{}) *ReactionEvent {
 	var re ReactionEvent
 	switch ev := event.(type) {
