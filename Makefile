@@ -39,3 +39,12 @@ clean-docs:
 
 run-docs:
 	@cd docs-src && hugo server --watch
+
+bolt-web:
+	@boltdbweb --db-name=bawt.bolt.db
+
+bolt-browser:
+	@boltbrowser bawt.bolt.dbq
+
+bolter:
+	@bolter -f bawt.bolt.db

@@ -40,9 +40,19 @@ type Listener struct {
 	// FromUser filters out incoming messages that are not with
 	// `*User` (publicly or privately)
 	FromUser *slack.User
+
 	// FromChannel filters messages that are sent to a different room than
 	// `Room`. This can be mixed and matched with `FromUser`
 	FromChannel *Channel
+
+	// FromAdmin filters messages that are only meant to be said by an admin
+	FromAdmin bool
+
+	// FromGroup filters messages that are not from these groups
+	FromGroup []slack.Group
+
+	// FromInternalGroup filters out messages not from these groups
+	FromInternalGroup []string
 
 	// PrivateOnly filters out public messages.
 	PrivateOnly bool
@@ -79,7 +89,7 @@ type Listener struct {
 	MentionsMeOnly bool
 
 	// MatchMyMessages equal to false filters out messages that the bot
-	// himself sent.
+	// itself sent.
 	MatchMyMessages bool
 
 	// MessageHandlerFunc is a handling function provided by the user, and
@@ -256,6 +266,43 @@ func (listen *Listener) filterMessage(msg *Message) bool {
 	// If there is no msg.FromUser, the message is filtered out.
 	if listen.FromUser != nil && (msg.FromUser == nil || msg.FromUser.ID != listen.FromUser.ID) {
 		return false
+	}
+
+	// Both need to be true
+	if listen.FromAdmin && !msg.FromUser.IsAdmin {
+		return false
+	}
+
+	if len(listen.FromInternalGroup) > 0 {
+		member := false
+
+		for _, g := range listen.FromInternalGroup {
+			listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Evaluating Access")
+
+			grp := InternalGroup{
+				Name: g,
+			}
+
+			m, err := grp.IsUserMember(listen.Bot.DB, msg.FromUser.ID)
+			if err != nil {
+				listen.Bot.Logging.Logger.WithError(err).Error("Error determining if user is a member of group")
+
+				return false
+			}
+
+			// If user is a member
+			if m {
+				listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Access Granted")
+				member = true
+
+				break
+			}
+		}
+
+		if !member {
+			listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).Debug("Access Denied")
+			return false
+		}
 	}
 
 	if listen.FromChannel != nil {

@@ -3,6 +3,7 @@ package bawt
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -31,10 +32,13 @@ type Bot struct {
 	// Logging configuration
 	Logging Logging
 
+	GlobalAdmins []string
+
 	// Slack connectivity
 	Slack             *slack.Client
 	rtm               *slack.RTM
 	Users             map[string]slack.User
+	Groups            []InternalGroup
 	Channels          map[string]Channel
 	channelUpdateLock sync.Mutex
 	Myself            slack.UserDetails
@@ -58,10 +62,12 @@ type Bot struct {
 	Mood      Mood
 }
 
-// New returns a new bot instance, initialized with the provided config
-// file. If an empty string is provided as the config file path, bawt
-// searches the working directory and $HOME/.bawt/ for a file called
-// config.json|toml|yaml instead
+/*
+New returns a new bot instance, initialized with the provided config
+file. If an empty string is provided as the config file path, bawt
+searches the working directory and $HOME/.bawt/ for a file called
+config.json|toml|yaml instead
+*/
 func New(configFile string) *Bot {
 	bot := &Bot{
 		configFile:     configFile,
@@ -104,15 +110,49 @@ func (bot *Bot) Run() {
 		log.Fatal("Couldn't write PID file:", err)
 	}
 
+	/*
+		Open BoltDB
+	*/
+
 	db, err := bolt.Open(bot.Config.DBPath, 0600, nil)
 	if err != nil {
 		log.WithError(err).Fatalf("Could not initialize BoltDB key/value store: %s", err)
 	}
+
 	defer func() {
 		log.Warnf("Database is closing")
 		db.Close()
 	}()
+
 	bot.DB = db
+
+	// Ensure the groups bucket exists
+	err = bot.DB.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte(Groups))
+		if err != nil {
+			return err
+		}
+
+		ga, err := b.CreateBucketIfNotExists([]byte("GlobalAdmins"))
+		if err != nil {
+			return err
+		}
+
+		m, err := json.Marshal(bot.GlobalAdmins)
+		if err != nil {
+			return err
+		}
+
+		// Add the global admins
+		if err := ga.Put([]byte("Members"), m); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		log.WithError(err).Fatalf("Unable to create bucket: %s", Groups)
+	}
 
 	// Init all plugins
 	var enabledPlugins []string
@@ -149,8 +189,7 @@ func (bot *Bot) Run() {
 
 	initChatPlugins(bot)
 
-	bot.Slack = slack.New(bot.Config.APIToken)
-	bot.Slack.SetDebug(bot.Config.Debug)
+	bot.Slack = slack.New(bot.Config.APIToken, slack.OptionDebug(bot.Config.Debug))
 
 	rtm := bot.Slack.NewRTM()
 	bot.rtm = rtm
@@ -181,14 +220,16 @@ func (bot *Bot) writePID() error {
 	return ioutil.WriteFile(serverConf.Server.Pidfile, pidb, 0755)
 }
 
-// Listen registers a listener for messages and events. There are two main
-// handling functions on a Listener: MessageHandlerFunc and EventHandlerFunc.
-// MessageHandlerFunc is filtered by a bunch of other properties of the Listener,
-// whereas EventHandlerFunc will receive all events unfiltered, but with
-// *bawt.Message instead of a raw *slack.MessageEvent (it's in there anyway),
-// which adds a bunch of useful methods to it.
-//
-// Explore the Listener for more details.
+/*
+Listen registers a listener for messages and events. There are two main
+handling functions on a Listener: MessageHandlerFunc and EventHandlerFunc.
+MessageHandlerFunc is filtered by a bunch of other properties of the Listener,
+whereas EventHandlerFunc will receive all events unfiltered, but with
+*bawt.Message instead of a raw *slack.MessageEvent (it's in there anyway),
+which adds a bunch of useful methods to it.
+
+Explore the Listener for more details.
+*/
 func (bot *Bot) Listen(listen *Listener) error {
 	log := bot.Logging.Logger
 	listen.Bot = bot
@@ -252,7 +293,7 @@ func (bot *Bot) setupHandlers() {
 	go bot.replyHandler()
 	go bot.messageHandler()
 
-	log.Println("Bot ready")
+	log.Info("Startup complete. Bot ready.")
 }
 
 func (bot *Bot) cacheUsers(users []slack.User) {
@@ -287,28 +328,35 @@ func (bot *Bot) loadBaseConfig() {
 
 	bot.readInConfig() // Find and parse the config file
 
+	// Temporary struct
 	var config struct {
-		Logging Logging
-		Slack   SlackConfig
+		Logging      Logging
+		Slack        SlackConfig
+		GlobalAdmins []string
 	}
 
+	// Unmarshal to a temporary struct
 	err := bot.LoadConfig(&config)
 	if err != nil {
 		log.WithError(err).Fatalln("Error loading config file.")
 	}
 
+	// Transfer the structs
 	bot.Config = config.Slack
 	bot.Logging = config.Logging
+	bot.GlobalAdmins = config.GlobalAdmins
 }
 
-// readInConfig reads the config file, unmarshals the given format (JSON, YAML or TOML)
-// and makes the result available for later use in LoadConfig()
+/*
+readInConfig reads the config file, unmarshals the given format (JSON, YAML or TOML)
+and makes the result available for later use in LoadConfig()
+*/
 func (bot *Bot) readInConfig() {
 	log := bot.Logging.Logger
 
 	// Use viper to find a default config file, or open the provided file is set
 	if bot.configFile == "" {
-		viper.SetConfigName("config")
+		viper.SetConfigName("config")      // The config file will go by "config"
 		viper.AddConfigPath(".")           // Look for config in the working directory
 		viper.AddConfigPath("$HOME/.bawt") // Look for config in .bawt folder in home directory
 	} else {
@@ -397,8 +445,10 @@ func (bot *Bot) UploadFile(p FileUploadParameters) *ReplyWithFile {
 	return &ReplyWithFile{f, bot}
 }
 
-// SendOutgoingMessage schedules the message for departure and returns
-// a Reply which can be listened on. See type `Reply`.
+/*
+SendOutgoingMessage schedules the message for departure and returns
+a Reply which can be listened on. See type `Reply`.
+*/
 func (bot *Bot) SendOutgoingMessage(text string, to string) *Reply {
 	log := bot.Logging.Logger
 
@@ -479,8 +529,11 @@ func (bot *Bot) messageHandler() {
 			bot.handleRTMEvent(&event)
 		}
 
-		// Always flush listeners deletions between messages, so a
-		// Close()'d Listener never processes another message.
+		/*
+			Always flush listeners deletions between messages, so a
+			Close()'d Listener never processes another message.
+		*/
+
 		for {
 			select {
 			case listen := <-bot.delListenerCh:
@@ -492,6 +545,15 @@ func (bot *Bot) messageHandler() {
 	}
 }
 
+/*
+The main event loop.
+
+This code could probably use some cleaning up and is quite complex when looking
+at it for the first time.
+
+The gist of it is that we catch the event and route them from here. If an event
+has multiple receivers/listeners then the pattern is to use channels.
+*/
 func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	var msg *Message
 	var client = bot.Slack
@@ -500,9 +562,9 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	log := bot.Logging.Logger
 
 	switch ev := event.Data.(type) {
-	/**
-	 * Connection handling...
-	 */
+	/*
+		Connection handling
+	*/
 	case *slack.LatencyReport:
 		log.WithFields(logrus.Fields{
 			"Type":    "LatencyReport",
@@ -515,34 +577,45 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			"Message":   ev.Msg,
 		}).Error("Real Time Messenger Error.")
 	case *slack.ConnectedEvent:
-		// Replacing ev.Info.Channels
+		/*
+			We do a series of checks here to make sure that we haven't lost an API.
+			Slack doesn't do a great job of letting us know that an API will no longer
+			be in use.
+		*/
+
+		// Fetch all channels
 		channels, err := client.GetChannels(false)
 		if err != nil {
-			panic("SLACK DEPRECATED ANOTHER API LOL")
+			log.WithError(err).Fatal("Unable to fetch channels")
 		}
 
-		// Replacing ev.Info.Groups
+		// Fetch all Slack groups
 		groups, err := client.GetGroups(false)
 		if err != nil {
-			panic("SLACK DEPRECATED ANOTHER API LOL")
+			log.WithError(err).Fatal("Unable to fetch groups")
 		}
 
-		// Replacing ev.Info.IMs
+		// Fetch all DM's
 		ims, err := client.GetIMChannels()
 		if err != nil {
-			panic("SLACK DEPRECATED ANOTHER API LOL")
+			log.WithError(err).Fatal("Unable to fetch IM channels")
 		}
 
-		// Replacing ev.Info.Users
+		// Fetch all the users
 		users, err := client.GetUsers()
 		if err != nil {
-			panic("SLACK DEPRECATED ANOTHER API LOL")
+			log.WithError(err).Fatal("Unable to fetch users")
 		}
 
 		log.Printf("Bot connected, connection_count=%d", ev.ConnectionCount)
 		bot.Myself = *ev.Info.User
-		bot.cacheUsers(users)                    // Info.Users is deprecated
-		bot.cacheChannels(channels, groups, ims) // Info.Channels is deprecated
+		bot.cacheUsers(users)                    // Store users
+		bot.cacheChannels(channels, groups, ims) // Store channels
+
+		/*
+			Make sure that at a minimum we are in the channels described in the config. We currently
+			don't sync back the channels the bot was invited to.
+		*/
 
 		for _, channelName := range bot.Config.JoinChannels {
 			channel := bot.GetChannelByName(channelName)
@@ -563,9 +636,10 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	case *slack.HelloEvent:
 		log.Info("Got a HELLO from websocket")
 
-	/**
-	 * Message dispatch and handling
-	 */
+	/*
+		Message dispatch and handling
+	*/
+
 	case *slack.MessageEvent:
 		log.WithFields(logrus.Fields{
 			"Message": ev,
@@ -635,22 +709,17 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		log.Infof("User %q is now %q", user.Name, ev.Presence)
 		user.Presence = ev.Presence
 
-	// TODO: manage im_open, im_close, and im_created ?
+	/*
+		User changes
+	*/
 
-	// case *slack.ReactionAddedEvent:
-	// 	reaction = ev
-	// case *slack.ReactionRemovedEvent:
-	// 	reaction = ev
-
-	/**
-	 * User changes
-	 */
 	case *slack.UserChangeEvent:
 		bot.Users[ev.User.ID] = ev.User
 
-	/**
-	 * Handle slack Channel changes
-	 */
+	/*
+		Handle slack Channel changes
+	*/
+
 	case *slack.ChannelRenameEvent:
 		channel := bot.Channels[ev.Channel.ID]
 		channel.Name = ev.Channel.Name
@@ -667,9 +736,6 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		c.IsChannel = true
 		bot.updateChannel(c)
 
-		// NICE TODO: poll the API to get a full Channel object ? many
-		// things are missing here
-
 	case *slack.ChannelDeletedEvent:
 		bot.deleteChannel(ev.Channel)
 
@@ -683,9 +749,10 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		channel.IsArchived = false
 		bot.updateChannel(channel)
 
-	/**
-	 * Handle slack Group changes
-	 */
+	/*
+		Handle slack Group changes
+	*/
+
 	case *slack.GroupRenameEvent:
 		group := bot.Channels[ev.Group.ID]
 		group.Name = ev.Group.Name
@@ -702,9 +769,6 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		c.IsGroup = true
 		bot.updateChannel(c)
 
-		// NICE: poll the API to get a full Group object ? many
-		// things are missing here
-
 	case *slack.GroupCloseEvent:
 		bot.deleteChannel(ev.Channel)
 
@@ -718,9 +782,10 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 		group.IsArchived = false
 		bot.updateChannel(group)
 
-	/**
-	 * Handle slack IM changes
-	 */
+	/*
+		Handle slack IM changes
+	*/
+
 	case *slack.IMCreatedEvent:
 		c := Channel{}
 		c.ID = ev.Channel.ID
@@ -738,9 +803,10 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	case *slack.IMCloseEvent:
 		bot.deleteChannel(ev.Channel)
 
-	/**
-	 * Errors
-	 */
+	/*
+		Errors
+	*/
+
 	case *slack.AckErrorEvent:
 		jsonCnt, _ := json.MarshalIndent(ev, "", "  ")
 		log.Warnf("AckErrorEvent: %s", jsonCnt)
@@ -779,11 +845,16 @@ func (bot *Bot) Disconnect() {
 // GetUser returns a *slack.User by ID, Name, RealName or Email
 func (bot *Bot) GetUser(find string) *slack.User {
 	for _, user := range bot.Users {
-		//log.Printf("Hmmmm, %#v", user)
 		if user.Profile.Email == find || user.ID == find || user.Name == find || user.RealName == find {
 			return &user
 		}
 	}
+	return nil
+}
+
+// GetGroup retrieves a group from BoltDB
+func (bot *Bot) GetGroup(name string) *InternalGroup {
+
 	return nil
 }
 
@@ -798,8 +869,7 @@ func (bot *Bot) GetChannelByName(name string) *Channel {
 	return nil
 }
 
-// GetIMChannelWith returns the channel used to communicate with the
-// specified slack user
+// GetIMChannelWith returns the channel used to communicate with the specified slack user
 func (bot *Bot) GetIMChannelWith(user *slack.User) *Channel {
 	for _, channel := range bot.Channels {
 		if !channel.IsIM {
@@ -845,4 +915,19 @@ func (bot *Bot) deleteChannel(id string) {
 	bot.channelUpdateLock.Lock()
 	delete(bot.Channels, id)
 	bot.channelUpdateLock.Unlock()
+}
+
+// NormalizeID normalizes slack user and channel ID's
+func NormalizeID(id string) string {
+	if strings.HasPrefix(id, "<@") {
+		id = strings.TrimLeft(id, "<@")
+	} else {
+		// a channel
+		id = strings.Split(id, "|")[1]
+		id = fmt.Sprintf("#%s", id)
+	}
+
+	id = strings.TrimRight(id, ">")
+
+	return id
 }

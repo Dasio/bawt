@@ -141,10 +141,12 @@ func (msg *Message) ReplyMention(text string, v ...interface{}) *Reply {
 
 // ReplyWithFile replies with a snippet or an attached file
 func (msg *Message) ReplyWithFile(p FileUploadParameters) *ReplyWithFile {
-	// https://godoc.org/github.com/nlopes/slack#FileUploadParameters
-	// Content means it's a snippet
-	// Reader means it's a large file
-	// Apparently File also works
+	/*
+		https://godoc.org/github.com/nlopes/slack#FileUploadParameters
+		* Content means it's a snippet
+		* Reader means it's a large file
+		* Apparently File also works
+	*/
 	return msg.bot.UploadFile(p)
 }
 

@@ -11,8 +11,8 @@ const (
 )
 
 // WithMood returns a different response depending on the mood
-func (b *Bot) WithMood(happy, hyper string) string {
-	if b.Mood == Happy {
+func (bot *Bot) WithMood(happy, hyper string) string {
+	if bot.Mood == Happy {
 		return happy
 	}
 

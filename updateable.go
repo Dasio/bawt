@@ -3,6 +3,8 @@ package bawt
 import (
 	"fmt"
 	"sync"
+
+	"github.com/nlopes/slack"
 )
 
 // UpdateableReply is a Reply that the bot sent, and that it is able
@@ -26,7 +28,7 @@ func (u *UpdateableReply) dispatch() {
 	}
 
 	if u.newMessage != "" {
-		u.reply.bot.Slack.UpdateMessage(u.reply.OutgoingMessage.Channel, u.msgTimestamp, u.newFormattedMessage())
+		u.reply.bot.Slack.UpdateMessage(u.reply.OutgoingMessage.Channel, u.msgTimestamp, u.newFormattedMessage(u.msgTimestamp))
 		u.newMessage = ""
 	}
 }
@@ -46,15 +48,15 @@ func (u *UpdateableReply) Update(format string, v ...interface{}) {
 	u.updateWithMode(updateWhole, format, v...)
 }
 
-func (u *UpdateableReply) newFormattedMessage() string {
+func (u *UpdateableReply) newFormattedMessage(timestamp string) slack.MsgOption {
 	prevMessage := u.reply.OutgoingMessage.Text
 	switch u.updateMode {
 	case updateSuffix:
-		return fmt.Sprintf("%s%s", prevMessage, u.newMessage)
+		return slack.MsgOptionText(fmt.Sprintf("%s%s", prevMessage, u.newMessage), false)
 	case updatePrefix:
-		return fmt.Sprintf("%s%s", u.newMessage, prevMessage)
+		return slack.MsgOptionText(fmt.Sprintf("%s%s", u.newMessage, prevMessage), false)
 	case updateWhole:
-		return u.newMessage
+		return slack.MsgOptionText(u.newMessage, false)
 	default:
 		panic("there's no other modes !")
 	}

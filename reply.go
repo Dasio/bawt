@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// ReplyWithFile replies to a user with a file
 type ReplyWithFile struct {
 	*slack.File
 	bot *Bot
