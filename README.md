@@ -19,8 +19,6 @@ Our goal is that bawt is always **easy to start**, **easy to run**, **easy to en
 
 **Easy to enhance.** We want Bawt's code to make sense not just to core developers but to plugin devs as well. That's why Bawt's core is both verbose and descriptive. There's no buried functionality, what you see is what you get.
 
-
-
 ## Local build and install
 
 ### With Modules
@@ -37,7 +35,7 @@ cd $GOPATH/src/github.com/gopherworks/bawt/example-bot
 go install -v && $GOPATH/bin/example-bot
 ```
 
-There's a Dockerfile and example configuration in the `example-bot` directory.
+There's a Dockerfile, example bot, and configuration in the `example-bot` directory.
 
 ## Writing your own plugin
 

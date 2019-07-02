@@ -89,8 +89,6 @@ func New(configFile string) *Bot {
 
 // Run loads the config, turns on logging, writes the PID, and loads the plugins.
 func (bot *Bot) Run() {
-	var opt slack.Option
-
 	// Config for Slack and logging are read in
 	if err := bot.LoadConfig(bot); err != nil {
 		fmt.Printf("Could not start bot: %s", err)
@@ -187,10 +185,10 @@ func (bot *Bot) Run() {
 
 	// Slack requires its own debug flag
 	if strings.ToUpper(bot.Logging.Level) == "DEBUG" {
-		opt = slack.OptionDebug(true)
+		bot.Slack = slack.New(bot.Config.APIToken, slack.OptionDebug(true))
+	} else {
+		bot.Slack = slack.New(bot.Config.APIToken)
 	}
-
-	bot.Slack = slack.New(bot.Config.APIToken, opt)
 
 	bot.rtm = bot.Slack.NewRTM()
 
