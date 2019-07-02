@@ -25,14 +25,10 @@ var Version string
 
 // Bot connects Bawt's configuration and API
 type Bot struct {
-	// Global bot configuration
-	configFile string
-	Config     SlackConfig
-
-	// Logging configuration
-	Logging Logging
-
-	GlobalAdmins []string
+	configFile   string
+	Config       SlackConfig `json:"Config"`
+	Logging      Logging     `json:"Logging"`
+	GlobalAdmins []string    `json:"GlobalAdmins"`
 
 	// Slack connectivity
 	Slack             *slack.Client
@@ -93,8 +89,13 @@ func New(configFile string) *Bot {
 
 // Run loads the config, turns on logging, writes the PID, and loads the plugins.
 func (bot *Bot) Run() {
+	var opt slack.Option
+
 	// Config for Slack and logging are read in
-	bot.loadBaseConfig()
+	if err := bot.LoadConfig(bot); err != nil {
+		fmt.Printf("Could not start bot: %s", err)
+		os.Exit(1)
+	}
 
 	// Configure logging
 	err := bot.setupLogging()
@@ -105,15 +106,11 @@ func (bot *Bot) Run() {
 	log := bot.Logging.Logger
 
 	// Write PID
-	err = bot.writePID()
-	if err != nil {
+	if err = bot.writePID(); err != nil {
 		log.Fatal("Couldn't write PID file:", err)
 	}
 
-	/*
-		Open BoltDB
-	*/
-
+	// Open BoltDB
 	db, err := bolt.Open(bot.Config.DBPath, 0600, nil)
 	if err != nil {
 		log.WithError(err).Fatalf("Could not initialize BoltDB key/value store: %s", err)
@@ -127,7 +124,7 @@ func (bot *Bot) Run() {
 	bot.DB = db
 
 	// Ensure the groups bucket exists
-	err = bot.DB.Update(func(tx *bolt.Tx) error {
+	if err = bot.DB.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists([]byte(Groups))
 		if err != nil {
 			return err
@@ -149,8 +146,7 @@ func (bot *Bot) Run() {
 		}
 
 		return nil
-	})
-	if err != nil {
+	}); err != nil {
 		log.WithError(err).Fatalf("Unable to create bucket: %s", Groups)
 	}
 
@@ -189,10 +185,14 @@ func (bot *Bot) Run() {
 
 	initChatPlugins(bot)
 
-	bot.Slack = slack.New(bot.Config.APIToken, slack.OptionDebug(bot.Config.Debug))
+	// Slack requires its own debug flag
+	if strings.ToUpper(bot.Logging.Level) == "DEBUG" {
+		opt = slack.OptionDebug(true)
+	}
 
-	rtm := bot.Slack.NewRTM()
-	bot.rtm = rtm
+	bot.Slack = slack.New(bot.Config.APIToken, opt)
+
+	bot.rtm = bot.Slack.NewRTM()
 
 	bot.setupHandlers()
 
@@ -204,11 +204,6 @@ func (bot *Bot) writePID() error {
 		Server struct {
 			Pidfile string `mapstructure:"pid_file"`
 		}
-	}
-
-	err := bot.LoadConfig(&serverConf)
-	if err != nil {
-		return err
 	}
 
 	if serverConf.Server.Pidfile == "" {
@@ -323,35 +318,8 @@ func (bot *Bot) cacheChannels(channels []slack.Channel, groups []slack.Group, im
 	}
 }
 
-func (bot *Bot) loadBaseConfig() {
-	log := bot.Logging.Logger
-
-	bot.readInConfig() // Find and parse the config file
-
-	// Temporary struct
-	var config struct {
-		Logging      Logging
-		Slack        SlackConfig
-		GlobalAdmins []string
-	}
-
-	// Unmarshal to a temporary struct
-	err := bot.LoadConfig(&config)
-	if err != nil {
-		log.WithError(err).Fatalln("Error loading config file.")
-	}
-
-	// Transfer the structs
-	bot.Config = config.Slack
-	bot.Logging = config.Logging
-	bot.GlobalAdmins = config.GlobalAdmins
-}
-
-/*
-readInConfig reads the config file, unmarshals the given format (JSON, YAML or TOML)
-and makes the result available for later use in LoadConfig()
-*/
-func (bot *Bot) readInConfig() {
+// LoadConfig will load configuration from a file or environment variables and populate it into the Bot struct
+func (bot *Bot) LoadConfig(cfg interface{}) error {
 	log := bot.Logging.Logger
 
 	// Use viper to find a default config file, or open the provided file is set
@@ -360,26 +328,31 @@ func (bot *Bot) readInConfig() {
 		viper.AddConfigPath(".")           // Look for config in the working directory
 		viper.AddConfigPath("$HOME/.bawt") // Look for config in .bawt folder in home directory
 	} else {
-		// Ensure the config file cannot be read of write by others
-		if err := checkPermission(bot.configFile); err != nil {
-			log.WithError(err).Fatal("Error checking permissions.")
-		}
-
 		viper.SetConfigFile(bot.configFile)
 	}
 
 	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Return an error if the config file cannot be parsed
-		log.WithError(err).Fatalf("fatal error config file: %s", err)
+	if cfgErr, ok := err.(viper.UnsupportedConfigError); ok {
+		log.WithError(cfgErr).Error("Unsupported configuration")
+		return cfgErr
 	}
-}
 
-// LoadConfig populates a given struct with the values from the config file
-func (bot *Bot) LoadConfig(config interface{}) (err error) {
-	log := bot.Logging.Logger
+	// Load the environment variable overrides
+	viper.AutomaticEnv()
 
-	err = viper.Unmarshal(&config)
-	if err != nil {
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	viper.BindEnv("config.api_token")
+	viper.BindEnv("config.join_channels")
+	viper.BindEnv("config.general_channel")
+	viper.BindEnv("config.team_domain")
+	viper.BindEnv("config.web_base_url")
+	viper.BindEnv("config.db_path")
+	viper.BindEnv("logging.type")
+	viper.BindEnv("logging.level")
+	viper.BindEnv("globaladmins")
+
+	if err = viper.Unmarshal(cfg); err != nil {
 		log.WithError(err).Errorf("unable to decode into struct, %v", err)
 		return err
 	}

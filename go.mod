@@ -20,7 +20,7 @@ require (
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/sirupsen/logrus v1.1.1
 	github.com/spf13/viper v1.2.0
-	github.com/stretchr/testify v1.2.2
+	github.com/stretchr/testify v1.3.0
 	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
 	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect

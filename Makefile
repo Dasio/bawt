@@ -14,7 +14,7 @@ build: clean vendor
 	@env GO111MODULE=on go build -mod=vendor -ldflags '-X "github.com/gopherworks/bawt.Version=${VERSION}" -s -w' -o build/bawt ./example-bot
 	@chmod a+x build/bawt
 
-vendor:
+vendor: clean
 	@go mod tidy
 	@go mod vendor
 
