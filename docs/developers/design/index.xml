@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Design on Documentation for Hugo Learn Theme</title>
+    <link>https://capstonelabs.github.io/bawt/developers/design/</link>
+    <description>Recent content in Design on Documentation for Hugo Learn Theme</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://capstonelabs.github.io/bawt/developers/design/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Event Loop</title>
+      <link>https://capstonelabs.github.io/bawt/developers/design/event-loop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/design/event-loop/</guid>
+      <description>Core to bawt is listening to an event queue that Slack provides in the form of their Real Time Messaging API. We process this queue through an event loop, which takes it where it needs to go in bawt mainly for internal purposes.
+graph LR; A[slack.RTMEvent] --|Process Event| B(handleRTMEvent) BB -.- C(slack.LatencyReport) BB -.- D(slack.RTMError) BB -.- E(slack.ConnectedEvent) BB -.- F(slack.DisconnectedEvent) BB -.- G(slack.InvalidAuthEvent) BB -.- H(slack.ConnectingEvent) BB -.- I(slack.</description>
+    </item>
+    
+  </channel>
+</rss>

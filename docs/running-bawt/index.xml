@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Running bawt on Documentation for Hugo Learn Theme</title>
+    <link>https://capstonelabs.github.io/bawt/running-bawt/</link>
+    <description>Recent content in Running bawt on Documentation for Hugo Learn Theme</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://capstonelabs.github.io/bawt/running-bawt/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/kubernetes/</guid>
+      <description>The Kubernetes manifests are currently being iterated on.</description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/docker/</guid>
+      <description>This assumes a Dockerfile in the same folder as your main package with modules and vendoring.
+FROM golang:alpine as builder RUN mkdir /build COPY . /build WORKDIR /build RUN apk add --update musl-dev gcc go git mercurial RUN env GO111MODULE=on go build -mod=vendor -o builds/bot . FROM alpine RUN apk --no-cache add ca-certificates RUN adduser -S -D -H -h /app appuser USER appuser RUN id COPY --from=builder /build/builds/bot /app/ WORKDIR /app CMD [&amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>Docker Compose</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/docker-compose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/docker-compose/</guid>
+      <description>The following configuration is how we do local development with Docker Compose.
+version: &#39;3.7&#39; services: bot: image: &#39;your/docker-image:latest&#39; restart: always command: - ./bot - runserver ports: - &amp;quot;8080:8080&amp;quot; volumes: - type: bind source: ./bot.bolt.db target: /bot.bolt.db read_only: false - type: bind source: ./config.yaml target: /config.yaml read_only: false  </description>
+    </item>
+    
+  </channel>
+</rss>

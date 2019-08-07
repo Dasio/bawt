@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Types on Documentation for Hugo Learn Theme</title>
+    <link>https://capstonelabs.github.io/bawt/developers/plugins/types/</link>
+    <description>Recent content in Types on Documentation for Hugo Learn Theme</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://capstonelabs.github.io/bawt/developers/plugins/types/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Chat Plugins</title>
+      <link>https://capstonelabs.github.io/bawt/developers/plugins/types/20-chat-plugins/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/plugins/types/20-chat-plugins/</guid>
+      <description>Chat Plugins use the PluginInitializer interface.
+Listeners In bawt one way you can interact with users is over chat. A listener is capable of listening for messages that align with a multitude of criteria.
+Fields In bawt listeners are structs that are highly configurable via various fields. Let&amp;rsquo;s take a look at the options:
+   Field Type Description     Name string Name of the app.</description>
+    </item>
+    
+    <item>
+      <title>Web Plugins</title>
+      <link>https://capstonelabs.github.io/bawt/developers/plugins/types/30-web-plugins/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/plugins/types/30-web-plugins/</guid>
+      <description>Web plugins primarily rely on gorilla/mux to serve HTTP or HTTPS pages. Most of the setup of a web plugin is done inside the InitWebPlugin function. You&amp;rsquo;re provided a reference to the bot, a private router, and a public router. Let&amp;rsquo;s look at the example below:
+func (wp *WebPlugin) InitWebPlugin(bot *bawt.Bot, privRouter *mux.Router, pubRouter *mux.Router) { // Storing the bawt reference wp.bot = bot // Load some config; see: https://gopherworks.github.io/bawt/developers/plugins/20-useful-functions/ var conf struct { wp wpConfig } bot.</description>
+    </item>
+    
+  </channel>
+</rss>

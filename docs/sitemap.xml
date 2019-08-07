@@ -3,7 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/design/event-loop/</loc>
+  </url>
+  
+  <url>
     <loc>https://capstonelabs.github.io/bawt/getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/running-bawt/kubernetes/</loc>
   </url>
   
   <url>
@@ -11,11 +19,39 @@
   </url>
   
   <url>
-    <loc>https://capstonelabs.github.io/bawt/developers/10-datastores/</loc>
+    <loc>https://capstonelabs.github.io/bawt/developers/plugins/types/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/plugins/types/20-chat-plugins/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/running-bawt/docker/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/running-bawt/</loc>
   </url>
   
   <url>
     <loc>https://capstonelabs.github.io/bawt/developers/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/running-bawt/docker-compose/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/plugins/20-useful-functions/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/plugins/types/30-web-plugins/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/20-datastores/</loc>
   </url>
   
   <url>
@@ -24,6 +60,10 @@
   
   <url>
     <loc>https://capstonelabs.github.io/bawt/code-of-conduct/</loc>
+  </url>
+  
+  <url>
+    <loc>https://capstonelabs.github.io/bawt/developers/design/</loc>
   </url>
   
   <url>

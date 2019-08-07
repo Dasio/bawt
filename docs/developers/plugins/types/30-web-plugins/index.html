@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Web Plugins :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/developers/plugins/types/30-web-plugins/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -193,7 +193,7 @@
   
     
     <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
-        
+        parent
         
         
         ">
@@ -222,7 +222,7 @@
   
     
     <li data-nav-id="/bawt/developers/plugins/" title="Plugins" class="dd-item 
-        
+        parent
         
         
         ">
@@ -251,7 +251,7 @@
   
     
     <li data-nav-id="/bawt/developers/plugins/types/" title="Types" class="dd-item 
-        
+        parent
         
         
         ">
@@ -296,7 +296,7 @@
  
   
     
-      <li data-nav-id="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins" class="dd-item ">
+      <li data-nav-id="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins" class="dd-item active">
         <a href="/bawt/developers/plugins/types/30-web-plugins/">
         Web Plugins
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/plugins/types/30-web-plugins.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,31 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > <a href='/bawt/developers/plugins/'>Plugins</a> > <a href='/bawt/developers/plugins/types/'>Types</a> > Web Plugins
+          
+         
+          
+         
+          
+         
+          
+         
           
            
                   </span>
@@ -560,17 +595,42 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Web Plugins</h1>
           
 
         
 
 
+<p>Web plugins primarily rely on <code>gorilla/mux</code> to serve HTTP or HTTPS pages. Most of the setup of a web plugin is done inside the <code>InitWebPlugin</code> function. You&rsquo;re provided a reference to the bot, a private router, and a public router. Let&rsquo;s look at the example below:</p>
+
+<pre><code class="language-go">func (wp *WebPlugin) InitWebPlugin(bot *bawt.Bot, privRouter *mux.Router, pubRouter *mux.Router) {
+    // Storing the bawt reference
+    wp.bot = bot
+
+    // Load some config; see: https://gopherworks.github.io/bawt/developers/plugins/20-useful-functions/ 
+    var conf struct {
+        wp wpConfig
+    }
+    bot.LoadConfig(&amp;conf)
+    wp.config = conf.wp
+
+    // The public router uses /public as a prefix
+    pubRouter.HandleFunc(&quot;/public/ping&quot;, wp.handlePing)
+
+    // The private router runs on localhost
+    privRouter.HandleFunc(&quot;/healthz&quot;, wp.handleHealthcheck)
+}
+</code></pre>
+
+<p>As you can see we load some configuration using bawt&rsquo;s built in functionality for loading it&rsquo;s core configuration. Next we setup a route on the public router for <code>/public/ping</code> and send it to a method called <code>handlePing</code>. This router is served on the IP address specified in the configuration.</p>
+
+<p>Private routers are just the same except they serve on <code>localhost</code>.</p>
 
 
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -686,20 +746,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -716,6 +762,23 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
                 
                 
 
@@ -728,6 +791,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -745,24 +811,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -783,34 +831,8 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
                         
-            
-            
-                
                     
                 
                 
@@ -819,9 +841,6 @@
                     
                     
 
-                    
-            
-        
                     
             
         
@@ -858,6 +877,57 @@
                     
 
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
             
         
                     
@@ -868,8 +938,10 @@
 
 
         
+            <a class="nav nav-prev" href="/bawt/developers/plugins/types/20-chat-plugins/" title="Chat Plugins"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/developers/plugins/20-useful-functions/" title="Loading Config" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +971,4 @@
 
   </body>
 </html>
+

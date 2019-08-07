@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Docker Compose :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/running-bawt/docker-compose/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -102,7 +102,7 @@
   
     
     <li data-nav-id="/bawt/running-bawt/" title="Running bawt" class="dd-item 
-        
+        parent
         
         
         ">
@@ -166,7 +166,7 @@
  
   
     
-      <li data-nav-id="/bawt/running-bawt/docker-compose/" title="Docker Compose" class="dd-item ">
+      <li data-nav-id="/bawt/running-bawt/docker-compose/" title="Docker Compose" class="dd-item active">
         <a href="/bawt/running-bawt/docker-compose/">
         Docker Compose
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcrunning-bawt/docker-compose.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,19 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/running-bawt/'>Running bawt</a> > Docker Compose
+          
+         
+          
+         
           
            
                   </span>
@@ -560,17 +583,40 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Docker Compose</h1>
           
 
         
 
 
+<p>The following configuration is how we do local development with Docker Compose.</p>
+
+<pre><code class="language-yaml">version: '3.7'
+services:
+  bot:
+    image: 'your/docker-image:latest'
+    restart: always
+    command: 
+    - ./bot
+    - runserver
+    ports:
+    - &quot;8080:8080&quot;
+    volumes:
+    - type: bind  
+      source: ./bot.bolt.db
+      target: /bot.bolt.db
+      read_only: false
+    - type: bind  
+      source: ./config.yaml
+      target: /config.yaml
+      read_only: false
+</code></pre>
 
 
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -622,6 +668,108 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
                 
                 
 
@@ -662,81 +810,6 @@
             
         
                     
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
             
         
                     
@@ -752,76 +825,6 @@
                     
                     
 
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
                     
             
         
@@ -858,6 +861,57 @@
                     
 
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
             
         
                     
@@ -868,8 +922,10 @@
 
 
         
+            <a class="nav nav-prev" href="/bawt/running-bawt/docker/" title="Docker"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/developers/" title="Developers" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +955,4 @@
 
   </body>
 </html>
+

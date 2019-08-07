@@ -11,11 +11,85 @@
     
     
     <item>
-      <title>Datastores</title>
-      <link>https://capstonelabs.github.io/bawt/developers/10-datastores/</link>
+      <title>Event Loop</title>
+      <link>https://capstonelabs.github.io/bawt/developers/design/event-loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://capstonelabs.github.io/bawt/developers/10-datastores/</guid>
+      <guid>https://capstonelabs.github.io/bawt/developers/design/event-loop/</guid>
+      <description>Core to bawt is listening to an event queue that Slack provides in the form of their Real Time Messaging API. We process this queue through an event loop, which takes it where it needs to go in bawt mainly for internal purposes.
+graph LR; A[slack.RTMEvent] --|Process Event| B(handleRTMEvent) BB -.- C(slack.LatencyReport) BB -.- D(slack.RTMError) BB -.- E(slack.ConnectedEvent) BB -.- F(slack.DisconnectedEvent) BB -.- G(slack.InvalidAuthEvent) BB -.- H(slack.ConnectingEvent) BB -.- I(slack.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/kubernetes/</guid>
+      <description>The Kubernetes manifests are currently being iterated on.</description>
+    </item>
+    
+    <item>
+      <title>Chat Plugins</title>
+      <link>https://capstonelabs.github.io/bawt/developers/plugins/types/20-chat-plugins/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/plugins/types/20-chat-plugins/</guid>
+      <description>Chat Plugins use the PluginInitializer interface.
+Listeners In bawt one way you can interact with users is over chat. A listener is capable of listening for messages that align with a multitude of criteria.
+Fields In bawt listeners are structs that are highly configurable via various fields. Let&amp;rsquo;s take a look at the options:
+   Field Type Description     Name string Name of the app.</description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/docker/</guid>
+      <description>This assumes a Dockerfile in the same folder as your main package with modules and vendoring.
+FROM golang:alpine as builder RUN mkdir /build COPY . /build WORKDIR /build RUN apk add --update musl-dev gcc go git mercurial RUN env GO111MODULE=on go build -mod=vendor -o builds/bot . FROM alpine RUN apk --no-cache add ca-certificates RUN adduser -S -D -H -h /app appuser USER appuser RUN id COPY --from=builder /build/builds/bot /app/ WORKDIR /app CMD [&amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>Docker Compose</title>
+      <link>https://capstonelabs.github.io/bawt/running-bawt/docker-compose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/running-bawt/docker-compose/</guid>
+      <description>The following configuration is how we do local development with Docker Compose.
+version: &#39;3.7&#39; services: bot: image: &#39;your/docker-image:latest&#39; restart: always command: - ./bot - runserver ports: - &amp;quot;8080:8080&amp;quot; volumes: - type: bind source: ./bot.bolt.db target: /bot.bolt.db read_only: false - type: bind source: ./config.yaml target: /config.yaml read_only: false  </description>
+    </item>
+    
+    <item>
+      <title>Loading Config</title>
+      <link>https://capstonelabs.github.io/bawt/developers/plugins/20-useful-functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/plugins/20-useful-functions/</guid>
+      <description>Bawt lets plugins consume configuration just the same way Bawt does.
+bawt.LoadConfig() can be utilized to marshal a struct that has fields you&amp;rsquo;re looking for. Let&amp;rsquo;s take a look at what that looks like in practice:
+Let&amp;rsquo;s say we&amp;rsquo;re developing a plugin called Sample Plugin
+type SamplePlugin struct { bot *bawt.Bot }  SamplePlugin needs some config though.
+type PluginConfig struct { Foo string `json:&amp;quot;foo&amp;quot;` Bar string `json:&amp;quot;bar&amp;quot;` Foobar string `json:&amp;quot;foobar&amp;quot;` }  Bawt utilizes Viper under the hood, so if you&amp;rsquo;re familiar with Viper then you&amp;rsquo;ll find working with Bawt&amp;rsquo;s config loader very simple.</description>
+    </item>
+    
+    <item>
+      <title>Web Plugins</title>
+      <link>https://capstonelabs.github.io/bawt/developers/plugins/types/30-web-plugins/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/plugins/types/30-web-plugins/</guid>
+      <description>Web plugins primarily rely on gorilla/mux to serve HTTP or HTTPS pages. Most of the setup of a web plugin is done inside the InitWebPlugin function. You&amp;rsquo;re provided a reference to the bot, a private router, and a public router. Let&amp;rsquo;s look at the example below:
+func (wp *WebPlugin) InitWebPlugin(bot *bawt.Bot, privRouter *mux.Router, pubRouter *mux.Router) { // Storing the bawt reference wp.bot = bot // Load some config; see: https://gopherworks.github.io/bawt/developers/plugins/20-useful-functions/ var conf struct { wp wpConfig } bot.</description>
+    </item>
+    
+    <item>
+      <title>Datastores</title>
+      <link>https://capstonelabs.github.io/bawt/developers/20-datastores/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://capstonelabs.github.io/bawt/developers/20-datastores/</guid>
       <description> Bawt has built in support for BoltDB
 Why Bolt? You can read more about Bolt above, but this is why Bolt has stayed a part of Bawt:
  Simple Lightweight Resilient  That said, Bolt isn&amp;rsquo;t meant for everything. If you have a usecase for a different datastore then add it!

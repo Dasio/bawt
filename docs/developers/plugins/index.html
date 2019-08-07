@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.6" />
-    <meta name="description" content="a ChatOps Slackbot written in Go">
+    <meta name="generator" content="Hugo 0.50-DEV" />
+    <meta name="description" content="a Slackbot framework written in Go">
 
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
@@ -12,24 +12,28 @@
     <title>Plugins :: Documentation for Hugo Learn Theme</title>
 
     
-    <link href="/bawt/css/nucleus.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/fontawesome-all.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/hybrid.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/featherlight.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/perfect-scrollbar.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/auto-complete.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/theme.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/hugo-theme.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/fontawesome-all.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/hybrid.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/featherlight.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/perfect-scrollbar.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/auto-complete.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/theme.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/hugo-theme.css?1565147846" rel="stylesheet">
     
-      <link href="/bawt/css/theme-blue.css?1559711070" rel="stylesheet">
+      <link href="/bawt/css/theme-blue.css?1565147846" rel="stylesheet">
     
 
-    <script src="/bawt/js/jquery-2.x.min.js?1559711070"></script>
+    <script src="/bawt/js/jquery-2.x.min.js?1565147846"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
           display:none !important;
       }
+      
+        :not(pre) > code + span.copy-to-clipboard {
+            display: none;
+        }
       
     </style>
     
@@ -41,7 +45,7 @@
 
   <div id="header-wrapper">
     <div id="header">
-      <img src="/bawt/img/bawt-white.svg" />
+      <a href="https://capstonelabs.github.io/bawt/"><img src="/bawt/img/bawt-white.svg" /></a>
     </div>
     
         <div class="searchbox">
@@ -50,14 +54,14 @@
     <span data-search-clear=""><i class="fas fa-close"></i></span>
 </div>
 
-<script type="text/javascript" src="/bawt/js/lunr.min.js?1559711070"></script>
-<script type="text/javascript" src="/bawt/js/auto-complete.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/lunr.min.js?1565147846"></script>
+<script type="text/javascript" src="/bawt/js/auto-complete.js?1565147846"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/capstonelabs.github.io\/bawt\/";
     
 </script>
-<script type="text/javascript" src="/bawt/js/search.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/search.js?1565147846"></script>
 
     
   </div>
@@ -85,6 +89,97 @@
           
       </a>
       
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/running-bawt/" title="Running bawt" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/running-bawt/">
+          Running bawt
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/kubernetes/" title="Kubernetes" class="dd-item ">
+        <a href="/bawt/running-bawt/kubernetes/">
+        Kubernetes
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/docker/" title="Docker" class="dd-item ">
+        <a href="/bawt/running-bawt/docker/">
+        Docker
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/docker-compose/" title="Docker Compose" class="dd-item ">
+        <a href="/bawt/running-bawt/docker-compose/">
+        Docker Compose
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -138,6 +233,83 @@
           
       </a>
       
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/plugins/types/" title="Types" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/developers/plugins/types/">
+          Types
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/plugins/types/20-chat-plugins/" title="Chat Plugins" class="dd-item ">
+        <a href="/bawt/developers/plugins/types/20-chat-plugins/">
+        Chat Plugins
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins" class="dd-item ">
+        <a href="/bawt/developers/plugins/types/30-web-plugins/">
+        Web Plugins
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -152,13 +324,96 @@
  
   
     
-      <li data-nav-id="/bawt/developers/10-datastores/" title="Datastores" class="dd-item ">
-        <a href="/bawt/developers/10-datastores/">
+      <li data-nav-id="/bawt/developers/plugins/20-useful-functions/" title="Loading Config" class="dd-item ">
+        <a href="/bawt/developers/plugins/20-useful-functions/">
+        Loading Config
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/20-datastores/" title="Datastores" class="dd-item ">
+        <a href="/bawt/developers/20-datastores/">
         Datastores
         <i class="fas fa-check read-icon"></i>
         </a>
     </li>
      
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/design/" title="Design" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/developers/design/">
+          Design
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/design/event-loop/" title="Event Loop" class="dd-item ">
+        <a href="/bawt/developers/design/event-loop/">
+        Event Loop
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
   
  
 
@@ -316,19 +571,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#interfaces">Interfaces</a>
-<ul>
-<li><a href="#the-base-interface">The base interface</a></li>
-<li><a href="#the-chat-interface">The chat interface</a></li>
-<li><a href="#the-webserver-interface">The webserver interface</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
+
     </div>
 </div>
 
@@ -348,6 +591,104 @@
 
 
 
+
+
+
+
+
+<ul class="children children-div">
+	
+    
+	    
+    
+    
+
+	
+		
+	
+		
+  
+
+
+<div>
+<a href="/bawt/developers/plugins/types/" >Types</a>
+</div>
+
+
+
+
+
+
+			
+				
+<p>Chat Plugins  Chat Plugins use the PluginInitializer interface. Listeners In bawt one way you can interact with users is over chat. A listener is capable of listening for messages that align with a multitude of criteria. Fields In bawt listeners are structs that are highly configurable via various fields. Let&rsquo;s take a look at the options: Field Type Description Name string Name of the app.
+ Web Plugins  Web plugins primarily rely on gorilla/mux to serve HTTP or HTTPS pages.</p>
+				
+			
+		
+
+		
+			
+
+	
+    
+    
+
+	
+		
+	
+
+	
+
+			
+
+		
+	
+		
+  
+
+
+<div>
+<a href="/bawt/developers/plugins/20-useful-functions/" >Loading Config</a>
+</div>
+
+
+
+
+
+
+			
+				
+<p>Bawt lets plugins consume configuration just the same way Bawt does.
+bawt.LoadConfig() can be utilized to marshal a struct that has fields you&rsquo;re looking for. Let&rsquo;s take a look at what that looks like in practice:
+Let&rsquo;s say we&rsquo;re developing a plugin called Sample Plugin
+type SamplePlugin struct { bot *bawt.Bot }  SamplePlugin needs some config though.
+type PluginConfig struct { Foo string `json:&quot;foo&quot;` Bar string `json:&quot;bar&quot;` Foobar string `json:&quot;foobar&quot;` }  Bawt utilizes Viper under the hood, so if you&rsquo;re familiar with Viper then you&rsquo;ll find working with Bawt&rsquo;s config loader very simple.</p>
+				
+			
+		
+
+		
+			
+
+	
+    
+    
+
+	
+		
+	
+
+	
+
+			
+
+		
+	
+
+	
+</ul>
+
 <p>All of Bawt&rsquo;s plugins start with a single <code>struct</code>. This struct stores configuration data that will be unmarshaled to it during the init process.</p>
 
 <p>At a minimum a field called <code>bot</code> which is a pointer of type <code>bawt.Bot</code>. This field is required in order to create your first listener, so don&rsquo;t forget it!</p>
@@ -366,49 +707,10 @@
 
 <p>Now our plugin is registered, but it still needs to be initialized.</p>
 
-<h2 id="interfaces">Interfaces</h2>
+<p>On the next page we&rsquo;ll be learning about the different plugin types and the methods they support!</p>
 
-<p>Bawt&rsquo;s plugins must only satisfy an <code>interface</code>, which in Go means that we must simply adhere to a certain minimal method structure.</p>
 
-<p>We do some polymorphism here, but it&rsquo;s not really complicated, so stay with us!</p>
 
-<h3 id="the-base-interface">The base interface</h3>
-
-<p>The base interface is <code>Plugin</code> which is satisfied by a struct with no methods.</p>
-
-<h3 id="the-chat-interface">The chat interface</h3>
-
-<p>The <code>PluginInitializer</code> interface is satisifed by a method of <code>InitPlugin(*Bot)</code>. In the context of our <code>Help</code> plugin, let&rsquo;s look how we&rsquo;d use that!</p>
-
-<pre><code class="language-go">// InitPlugin initializes the plugin
-func (h *Help) InitPlugin(bot *bawt.Bot) {
-	h.bot = bot
-
-	h.listenHelp()
-}
-
-func (h *Help) listenHelp() {
-	h.bot.Listen(&amp;bawt.Listener{
-		Matches:            regexp.MustCompile(`^!help.*`),
-		MessageHandlerFunc: h.handleHelp,
-	})
-}
-
-func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
-	// Do some things
-	msg.Reply(&quot;Got your message!&quot;)
-}
-</code></pre>
-
-<p>Messages are sent to registered listeners as they are received and if the listener regex matches then we execute the <code>MessageHandlerFunc</code> which takes two arguments supplied by Bawt&rsquo;s core: <code>Listener</code> and <code>Message</code>.</p>
-
-<p>While <code>Listener</code> has some useful exported methods, the <code>Message</code> type comes with methods for replying in various ways and will be what a majority of developers will be interacting with.</p>
-
-<h3 id="the-webserver-interface">The webserver interface</h3>
-
-<p>Bawt can extend itself to listen to web requests.</p>
-
-<p>The web server plugin interface is fully functional, however, not fully documented. It is currently under development and will receive a lot better documentation in the future :)</p>
 
 
 <footer class=" footline" >
@@ -465,13 +767,10 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
             
                 
                     
-                    
                 
                 
 
                     
-                    
-                        
                     
                     
 
@@ -480,7 +779,6 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
             
             
                 
-                    
                     
                 
                 
@@ -498,6 +796,73 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
                         
                         
                     
@@ -508,6 +873,105 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
                     
                     
 
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
             
         
@@ -557,7 +1021,7 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
             <a class="nav nav-prev" href="/bawt/developers/" title="Developers"> <i class="fas fa-chevron-left"></i></a>
         
         
-            <a class="nav nav-next" href="/bawt/developers/10-datastores/" title="Datastores" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+            <a class="nav nav-next" href="/bawt/developers/plugins/types/" title="Types" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -566,20 +1030,20 @@ func (h *Help) handleHelp(listen *bawt.Listener, msg *bawt.Message) {
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/bawt/js/clipboard.min.js?1559711070"></script>
-    <script src="/bawt/js/perfect-scrollbar.min.js?1559711070"></script>
-    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1559711070"></script>
-    <script src="/bawt/js/jquery.sticky.js?1559711070"></script>
-    <script src="/bawt/js/featherlight.min.js?1559711070"></script>
-    <script src="/bawt/js/html5shiv-printshiv.min.js?1559711070"></script>
-    <script src="/bawt/js/highlight.pack.js?1559711070"></script>
+    <script src="/bawt/js/clipboard.min.js?1565147846"></script>
+    <script src="/bawt/js/perfect-scrollbar.min.js?1565147846"></script>
+    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1565147846"></script>
+    <script src="/bawt/js/jquery.sticky.js?1565147846"></script>
+    <script src="/bawt/js/featherlight.min.js?1565147846"></script>
+    <script src="/bawt/js/html5shiv-printshiv.min.js?1565147846"></script>
+    <script src="/bawt/js/highlight.pack.js?1565147846"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/bawt/js/modernizr.custom.71422.js?1559711070"></script>
-    <script src="/bawt/js/learn.js?1559711070"></script>
-    <script src="/bawt/js/hugo-learn.js?1559711070"></script>
+    <script src="/bawt/js/modernizr.custom.71422.js?1565147846"></script>
+    <script src="/bawt/js/learn.js?1565147846"></script>
+    <script src="/bawt/js/hugo-learn.js?1565147846"></script>
 
-    <link href="/bawt/mermaid/mermaid.css?1559711070" type="text/css" rel="stylesheet" />
-    <script src="/bawt/mermaid/mermaid.js?1559711070"></script>
+    <link href="/bawt/mermaid/mermaid.css?1565147846" type="text/css" rel="stylesheet" />
+    <script src="/bawt/mermaid/mermaid.js?1565147846"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

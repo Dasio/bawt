@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.55.6" />
-    <meta name="description" content="a ChatOps Slackbot written in Go">
+    <meta name="generator" content="Hugo 0.50-DEV" />
+    <meta name="description" content="a Slackbot framework written in Go">
 
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
@@ -12,24 +12,28 @@
     <title>Getting Started :: Documentation for Hugo Learn Theme</title>
 
     
-    <link href="/bawt/css/nucleus.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/fontawesome-all.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/hybrid.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/featherlight.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/perfect-scrollbar.min.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/auto-complete.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/theme.css?1559711070" rel="stylesheet">
-    <link href="/bawt/css/hugo-theme.css?1559711070" rel="stylesheet">
+    <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/fontawesome-all.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/hybrid.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/featherlight.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/perfect-scrollbar.min.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/auto-complete.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/theme.css?1565147846" rel="stylesheet">
+    <link href="/bawt/css/hugo-theme.css?1565147846" rel="stylesheet">
     
-      <link href="/bawt/css/theme-blue.css?1559711070" rel="stylesheet">
+      <link href="/bawt/css/theme-blue.css?1565147846" rel="stylesheet">
     
 
-    <script src="/bawt/js/jquery-2.x.min.js?1559711070"></script>
+    <script src="/bawt/js/jquery-2.x.min.js?1565147846"></script>
 
     <style type="text/css">
       :root #header + #content > #left > #rlblock_left{
           display:none !important;
       }
+      
+        :not(pre) > code + span.copy-to-clipboard {
+            display: none;
+        }
       
     </style>
     
@@ -41,7 +45,7 @@
 
   <div id="header-wrapper">
     <div id="header">
-      <img src="/bawt/img/bawt-white.svg" />
+      <a href="https://capstonelabs.github.io/bawt/"><img src="/bawt/img/bawt-white.svg" /></a>
     </div>
     
         <div class="searchbox">
@@ -50,14 +54,14 @@
     <span data-search-clear=""><i class="fas fa-close"></i></span>
 </div>
 
-<script type="text/javascript" src="/bawt/js/lunr.min.js?1559711070"></script>
-<script type="text/javascript" src="/bawt/js/auto-complete.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/lunr.min.js?1565147846"></script>
+<script type="text/javascript" src="/bawt/js/auto-complete.js?1565147846"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/capstonelabs.github.io\/bawt\/";
     
 </script>
-<script type="text/javascript" src="/bawt/js/search.js?1559711070"></script>
+<script type="text/javascript" src="/bawt/js/search.js?1565147846"></script>
 
     
   </div>
@@ -85,6 +89,97 @@
           
       </a>
       
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/running-bawt/" title="Running bawt" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/running-bawt/">
+          Running bawt
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/kubernetes/" title="Kubernetes" class="dd-item ">
+        <a href="/bawt/running-bawt/kubernetes/">
+        Kubernetes
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/docker/" title="Docker" class="dd-item ">
+        <a href="/bawt/running-bawt/docker/">
+        Docker
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/running-bawt/docker-compose/" title="Docker Compose" class="dd-item ">
+        <a href="/bawt/running-bawt/docker-compose/">
+        Docker Compose
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -138,6 +233,83 @@
           
       </a>
       
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/plugins/types/" title="Types" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/developers/plugins/types/">
+          Types
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/plugins/types/20-chat-plugins/" title="Chat Plugins" class="dd-item ">
+        <a href="/bawt/developers/plugins/types/20-chat-plugins/">
+        Chat Plugins
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins" class="dd-item ">
+        <a href="/bawt/developers/plugins/types/30-web-plugins/">
+        Web Plugins
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -152,13 +324,96 @@
  
   
     
-      <li data-nav-id="/bawt/developers/10-datastores/" title="Datastores" class="dd-item ">
-        <a href="/bawt/developers/10-datastores/">
+      <li data-nav-id="/bawt/developers/plugins/20-useful-functions/" title="Loading Config" class="dd-item ">
+        <a href="/bawt/developers/plugins/20-useful-functions/">
+        Loading Config
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/20-datastores/" title="Datastores" class="dd-item ">
+        <a href="/bawt/developers/20-datastores/">
         Datastores
         <i class="fas fa-check read-icon"></i>
         </a>
     </li>
      
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/bawt/developers/design/" title="Design" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/bawt/developers/design/">
+          Design
+          
+            <i class="fas read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/bawt/developers/design/event-loop/" title="Event Loop" class="dd-item ">
+        <a href="/bawt/developers/design/event-loop/">
+        Event Loop
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
   
  
 
@@ -431,6 +686,8 @@ run:
 
 <p><code>make run</code></p>
 
+<p>Click the arrow to read about putting your bot in Docker, Docker-Compose, and Kubernetes!</p>
+
 
 <footer class=" footline" >
 	
@@ -492,7 +749,99 @@ run:
 
                     
                     
+                    
+
+                    
                         
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
                     
                     
 
@@ -525,6 +874,76 @@ run:
                     
                     
 
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
             
         
@@ -574,7 +993,7 @@ run:
             <a class="nav nav-prev" href="/bawt/" title="home"> <i class="fas fa-chevron-left"></i></a>
         
         
-            <a class="nav nav-next" href="/bawt/developers/" title="Developers" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+            <a class="nav nav-next" href="/bawt/running-bawt/" title="Running bawt" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -583,20 +1002,20 @@ run:
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/bawt/js/clipboard.min.js?1559711070"></script>
-    <script src="/bawt/js/perfect-scrollbar.min.js?1559711070"></script>
-    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1559711070"></script>
-    <script src="/bawt/js/jquery.sticky.js?1559711070"></script>
-    <script src="/bawt/js/featherlight.min.js?1559711070"></script>
-    <script src="/bawt/js/html5shiv-printshiv.min.js?1559711070"></script>
-    <script src="/bawt/js/highlight.pack.js?1559711070"></script>
+    <script src="/bawt/js/clipboard.min.js?1565147846"></script>
+    <script src="/bawt/js/perfect-scrollbar.min.js?1565147846"></script>
+    <script src="/bawt/js/perfect-scrollbar.jquery.min.js?1565147846"></script>
+    <script src="/bawt/js/jquery.sticky.js?1565147846"></script>
+    <script src="/bawt/js/featherlight.min.js?1565147846"></script>
+    <script src="/bawt/js/html5shiv-printshiv.min.js?1565147846"></script>
+    <script src="/bawt/js/highlight.pack.js?1565147846"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/bawt/js/modernizr.custom.71422.js?1559711070"></script>
-    <script src="/bawt/js/learn.js?1559711070"></script>
-    <script src="/bawt/js/hugo-learn.js?1559711070"></script>
+    <script src="/bawt/js/modernizr.custom.71422.js?1565147846"></script>
+    <script src="/bawt/js/learn.js?1565147846"></script>
+    <script src="/bawt/js/hugo-learn.js?1565147846"></script>
 
-    <link href="/bawt/mermaid/mermaid.css?1559711070" type="text/css" rel="stylesheet" />
-    <script src="/bawt/mermaid/mermaid.js?1559711070"></script>
+    <link href="/bawt/mermaid/mermaid.css?1565147846" type="text/css" rel="stylesheet" />
+    <script src="/bawt/mermaid/mermaid.js?1565147846"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>

@@ -11,7 +11,7 @@ params:
   # See the config.toml file from this documentation site to have an example.
   editURL: "https://github.com/gopherworks/bawt/tree/master/content/docs-src"
   # Description of the site, will be used in meta information
-  description: "a ChatOps Slackbot written in Go"
+  description: "a Slackbot framework written in Go"
   # Shows a checkmark for visited pages on the menu
   showVisitedLinks: true
   # Disable search function. It will hide search bar
@@ -20,7 +20,7 @@ params:
   # Set this to true to disable this behavior (some proxies don't handle well this optimization)
   disableAssetsBusting: false
   # Set this to true to disable copy-to-clipboard button for inline code.
-  disableInlineCopyToClipBoard: false
+  disableInlineCopyToClipBoard: true
   # A title for shortcuts in menu is set by default. Set this to true to disable it. 
   disableShortcutsTitle: false
   # When using mulitlingual website, disable the switch language button.

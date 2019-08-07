@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Datastores :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/developers/20-datastores/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -193,7 +193,7 @@
   
     
     <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
-        
+        parent
         
         
         ">
@@ -352,7 +352,7 @@
  
   
     
-      <li data-nav-id="/bawt/developers/20-datastores/" title="Datastores" class="dd-item ">
+      <li data-nav-id="/bawt/developers/20-datastores/" title="Datastores" class="dd-item active">
         <a href="/bawt/developers/20-datastores/">
         Datastores
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/20-datastores.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,19 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > Datastores
+          
+         
+          
+         
           
            
                   </span>
@@ -548,7 +571,21 @@
                 
                     <div class="progress">
     <div class="wrapper">
-
+<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#why-bolt">Why Bolt?</a></li>
+<li><a href="#tools">Tools</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
     </div>
 </div>
 
@@ -560,7 +597,7 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Datastores</h1>
           
 
         
@@ -568,9 +605,33 @@
 
 
 
+<p>Bawt has built in support for <a href="https://github.com/boltdb/bolt">BoltDB</a></p>
+
+<h4 id="why-bolt">Why Bolt?</h4>
+
+<p>You can read more about Bolt above, but this is why Bolt has stayed a part of Bawt:</p>
+
+<ul>
+<li>Simple</li>
+<li>Lightweight</li>
+<li>Resilient</li>
+</ul>
+
+<p>That said, Bolt isn&rsquo;t meant for everything. If you have a usecase for a different datastore then add it!</p>
+
+<h4 id="tools">Tools</h4>
+
+<ul>
+<li><a href="https://github.com/evnix/boltdbweb">BoltDB Web</a> - A web frontend for browsing BoltDB</li>
+<li><a href="https://github.com/br0xen/boltbrowser">Bolt Browser</a> - A command line browser for BoltDB</li>
+<li><a href="https://github.com/hasit/bolter">Bolter</a> - A machine friendly CLI for interrogating BoltDB</li>
+</ul>
+
+
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -686,6 +747,25 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
                 
                 
 
@@ -706,8 +786,6 @@
 
                     
                     
-                        
-                    
                     
 
                     
@@ -723,38 +801,6 @@
                     
                     
 
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
                     
             
         
@@ -794,24 +840,15 @@
             
         
                     
-                        
             
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
+        
                     
                         
             
             
                 
                     
+                    
                 
                 
 
@@ -819,12 +856,6 @@
                     
                     
 
-                    
-            
-        
-                    
-            
-        
                     
             
         
@@ -834,6 +865,9 @@
             
                 
                     
+                        
+                        
+                    
                 
                 
 
@@ -841,9 +875,6 @@
                     
                     
 
-                    
-            
-        
                     
                         
             
@@ -863,13 +894,53 @@
                     
             
         
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
         
         
 
 
         
+            <a class="nav nav-prev" href="/bawt/developers/plugins/20-useful-functions/" title="Loading Config"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/developers/design/" title="Design" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +970,4 @@
 
   </body>
 </html>
+

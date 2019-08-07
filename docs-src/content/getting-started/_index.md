@@ -93,3 +93,5 @@ run:
 That's it! We're ready to fire New-Bot up!
 
 `make run`
+
+Click the arrow to read about putting your bot in Docker, Docker-Compose, and Kubernetes!

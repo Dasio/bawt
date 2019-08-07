@@ -1,6 +1,6 @@
 ---
 title: "Datastores"
-weight: 20
+weight: 40
 ---
 
 Bawt has built in support for [BoltDB](https://github.com/boltdb/bolt)

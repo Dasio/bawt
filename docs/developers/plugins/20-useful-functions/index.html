@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Loading Config :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/developers/plugins/20-useful-functions/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -193,7 +193,7 @@
   
     
     <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
-        
+        parent
         
         
         ">
@@ -222,7 +222,7 @@
   
     
     <li data-nav-id="/bawt/developers/plugins/" title="Plugins" class="dd-item 
-        
+        parent
         
         
         ">
@@ -324,7 +324,7 @@
  
   
     
-      <li data-nav-id="/bawt/developers/plugins/20-useful-functions/" title="Loading Config" class="dd-item ">
+      <li data-nav-id="/bawt/developers/plugins/20-useful-functions/" title="Loading Config" class="dd-item active">
         <a href="/bawt/developers/plugins/20-useful-functions/">
         Loading Config
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/plugins/20-useful-functions.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,25 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > <a href='/bawt/developers/plugins/'>Plugins</a> > Loading Config
+          
+         
+          
+         
+          
+         
           
            
                   </span>
@@ -560,17 +589,87 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Loading Config</h1>
           
 
         
 
 
+<p>Bawt lets plugins consume configuration just the same way Bawt does.</p>
+
+<p><code>bawt.LoadConfig()</code> can be utilized to marshal a struct that has fields you&rsquo;re looking for. Let&rsquo;s take a look at what that looks like in practice:</p>
+
+<p>Let&rsquo;s say we&rsquo;re developing a plugin called Sample Plugin</p>
+
+<pre><code class="language-go">type SamplePlugin struct {
+    bot     *bawt.Bot
+}
+</code></pre>
+
+<p>SamplePlugin needs some config though.</p>
+
+<pre><code class="language-go">type PluginConfig struct {
+	Foo      string `json:&quot;foo&quot;`
+	Bar      string `json:&quot;bar&quot;`
+	Foobar   string `json:&quot;foobar&quot;`
+}
+</code></pre>
+
+<p>Bawt utilizes Viper under the hood, so if you&rsquo;re familiar with Viper then you&rsquo;ll find working with Bawt&rsquo;s config loader very simple. Bawt can accept JSON, YAML, or TOML.</p>
+
+<p>This config needs to be stored somewhere! Let&rsquo;s modify our plugin struct:</p>
+
+<pre><code class="language-go">type SamplePlugin struct {
+    bot       *bawt.Bot
+    config    *PluginConfig
+}
+</code></pre>
+
+<p>The InitPlugin method is called directly after the plugin has loaded. This is a good place to wire up our configuration:</p>
+
+<pre><code class="language-go">func (s *SamplePlugin) InitPlugin(b *bawt.Bot) {
+    // The field name here is how our config field will be named
+    var conf struct {
+		SamplePlugin PluginConfig
+	}
+	
+    // Drop bot into the plugin struct
+    s.bot = b
+
+    bot.LoadConfig(&amp;conf)
+
+    s.config = &amp;conf.SamplePlugin
+}
+</code></pre>
+
+<div class="notices tip" ><p>This method utilizes a pointer receiver because it modifies our plugin struct.</p>
+</div>
+
+
+<p>Now if our config goes like this&hellip;</p>
+
+<pre><code class="language-yaml">Config:
+    ...
+SamplePlugin:
+    foo: bar
+    bar: foo
+    foobar: barfoo
+</code></pre>
+
+<p>Bawt will pick up the SamplePlugin object and unmarshal it to your struct which is accessible by</p>
+
+<pre><code class="language-go">func (s SamplePlugin) someFunc() {
+    fmt.Printf(&quot;Sample plugin foo: %s&quot;, s.config.foo)
+}
+</code></pre>
+
+<p>You&rsquo;ve now successfully made Bawt load plugin config on your behalf!</p>
 
 
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -686,20 +785,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -716,10 +801,13 @@
             
                 
                     
+                    
                 
                 
 
                     
+                    
+                        
                     
                     
 
@@ -729,40 +817,8 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
                         
-            
-            
-                
                     
                 
                 
@@ -771,63 +827,6 @@
                     
                     
 
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-            
-        
                     
                         
             
@@ -863,13 +862,124 @@
                     
             
         
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
         
         
 
 
         
+            <a class="nav nav-prev" href="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/developers/20-datastores/" title="Datastores" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +1009,4 @@
 
   </body>
 </html>
+

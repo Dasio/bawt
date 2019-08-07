@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Chat Plugins :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/developers/plugins/types/20-chat-plugins/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -193,7 +193,7 @@
   
     
     <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
-        
+        parent
         
         
         ">
@@ -222,7 +222,7 @@
   
     
     <li data-nav-id="/bawt/developers/plugins/" title="Plugins" class="dd-item 
-        
+        parent
         
         
         ">
@@ -251,7 +251,7 @@
   
     
     <li data-nav-id="/bawt/developers/plugins/types/" title="Types" class="dd-item 
-        
+        parent
         
         
         ">
@@ -277,7 +277,7 @@
  
   
     
-      <li data-nav-id="/bawt/developers/plugins/types/20-chat-plugins/" title="Chat Plugins" class="dd-item ">
+      <li data-nav-id="/bawt/developers/plugins/types/20-chat-plugins/" title="Chat Plugins" class="dd-item active">
         <a href="/bawt/developers/plugins/types/20-chat-plugins/">
         Chat Plugins
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/plugins/types/20-chat-plugins.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,31 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > <a href='/bawt/developers/plugins/'>Plugins</a> > <a href='/bawt/developers/plugins/types/'>Types</a> > Chat Plugins
+          
+         
+          
+         
+          
+         
+          
+         
           
            
                   </span>
@@ -548,7 +583,23 @@
                 
                     <div class="progress">
     <div class="wrapper">
-
+<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#listeners">Listeners</a>
+<ul>
+<li><a href="#fields">Fields</a></li>
+<li><a href="#methods">Methods</a></li>
+</ul></li>
+<li><a href="#message-handling">Message Handling</a>
+<ul>
+<li><a href="#fields-1">Fields</a></li>
+<li><a href="#methods-1">Methods</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
     </div>
 </div>
 
@@ -560,7 +611,7 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Chat Plugins</h1>
           
 
         
@@ -568,9 +619,351 @@
 
 
 
+<p>Chat Plugins use the <a href="http://localhost:1313/bawt/developers/plugins/types/#plugininitializer">PluginInitializer interface</a>.</p>
+
+<h2 id="listeners">Listeners</h2>
+
+<p>In bawt one way you can interact with users is over chat. A listener is capable of listening for messages that align with a multitude of criteria.</p>
+
+<h3 id="fields">Fields</h3>
+
+<p>In bawt listeners are structs that are highly configurable via various fields. Let&rsquo;s take a look at the options:</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th>Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">Name</td>
+<td>string</td>
+<td align="left">Name of the app. Used during app listing.</td>
+</tr>
+
+<tr>
+<td align="left">Description</td>
+<td>string</td>
+<td align="left">Description of the app. Used during app listing.</td>
+</tr>
+
+<tr>
+<td align="left">Slug</td>
+<td>string</td>
+<td align="left">Slug is a short code used in the help menu</td>
+</tr>
+
+<tr>
+<td align="left">Commands</td>
+<td>[]Command</td>
+<td align="left">Commands are the help documentation for commands</td>
+</tr>
+
+<tr>
+<td align="left">ListenUntil</td>
+<td>time.Time</td>
+<td align="left">ListenUntil sets an absolute date at which this Listener expires and stops listening.  ListenUntil and ListenDuration are optional and mutually exclusive.</td>
+</tr>
+
+<tr>
+<td align="left">ListenDuration</td>
+<td>time.Duration</td>
+<td align="left">ListenDuration sets a timeout Duration, after which this Listener stops listening and is garbage collected. A call to <code>ResetTimeout()</code> restarts the listening period for another <code>ListenDuration</code>.</td>
+</tr>
+
+<tr>
+<td align="left">FromUser</td>
+<td>*slack.User</td>
+<td align="left">FromUser filters out incoming messages that are not with <code>*User</code> (publicly or privately)</td>
+</tr>
+
+<tr>
+<td align="left">FromChannel</td>
+<td>*Channel</td>
+<td align="left">FromChannel filters messages that are sent to a different room than <code>Room</code>. This can be mixed and matched with <code>FromUser</code></td>
+</tr>
+
+<tr>
+<td align="left">FromAdmin</td>
+<td>bool</td>
+<td align="left">FromAdmin filters messages that are only meant to be said by an admin</td>
+</tr>
+
+<tr>
+<td align="left">FromGroup</td>
+<td>[]slack.Group</td>
+<td align="left">FromGroup filters messages that are not from these groups</td>
+</tr>
+
+<tr>
+<td align="left">FromInternalGroup</td>
+<td>[]string</td>
+<td align="left">FromInternalGroup filters out messages not from these groups</td>
+</tr>
+
+<tr>
+<td align="left">PrivateOnly</td>
+<td>bool</td>
+<td align="left">PrivateOnly filters out public messages</td>
+</tr>
+
+<tr>
+<td align="left">PublicOnly</td>
+<td>bool</td>
+<td align="left">PublicOnly filters out private messages.  Mutually exclusive with <code>PrivateOnly</code></td>
+</tr>
+
+<tr>
+<td align="left">Contains</td>
+<td>string</td>
+<td align="left">Contains checks whether the <code>string</code> is in the message body (after lower-casing both components)</td>
+</tr>
+
+<tr>
+<td align="left">ContainsAny</td>
+<td>[]string</td>
+<td align="left">ContainsAny checks that any one of the specified strings exist as substrings in the message body.  Mutually exclusive with <code>Contains</code></td>
+</tr>
+
+<tr>
+<td align="left">Matches</td>
+<td>*regexp.Regexp</td>
+<td align="left">Matches checks that the given text matches the given Regexp with a <code>FindStringSubmatch</code> call. It will set the <code>Message.Match</code> attribute. <div class="notices note" >If you spin off a goroutine in the MessageHandlerFunc, make sure to keep a copy of the <code>Message.Match</code> object because it will be overwritten by the next Listener the moment your MessageHandlerFunc unblocks</div>
+</td>
+</tr>
+
+<tr>
+<td align="left">ListenForEdits</td>
+<td>bool</td>
+<td align="left">ListenForEdits will trigger a message when a user edits a message as well as creates a new one</td>
+</tr>
+
+<tr>
+<td align="left">MentionsMeOnly</td>
+<td>bool</td>
+<td align="left">MentionsMe filters out messages that do not mention the Bot&rsquo;s <code>bot.Config.MentionName</code></td>
+</tr>
+
+<tr>
+<td align="left">MatchMyMessages</td>
+<td>bool</td>
+<td align="left">MatchMyMessages equal to false filters out messages that the bot itself sent.</td>
+</tr>
+
+<tr>
+<td align="left">MessageHandlerFunc</td>
+<td>func(*Listener, *Message)</td>
+<td align="left">MessageHandlerFunc is a handling function provided by the user, and called when a relevant message comes in</td>
+</tr>
+
+<tr>
+<td align="left">EventHandlerFunc</td>
+<td>func(*Listener, interface{})</td>
+<td align="left">EventHandlerFunc is a handling function provided by the user, and called when any event is received. These messages are dispatched to each Listener in turn, after the bot has processed it. If the event is a Message, then the <code>bawt.Message</code> will be non-nil. When receiving a <code>*slack.MessageEvent</code>, bawt will wrap it in a <code>*bawt.Message</code> which embeds the the original event, but adds quite a few functionalities, like reply modes, etc..</td>
+</tr>
+
+<tr>
+<td align="left">TimeoutFunc</td>
+<td>func(*Listener)</td>
+<td align="left">TimeoutFunc is called when a conversation expires after <code>ListenDuration</code> or <code>ListenUntil</code> delays.  It is <em>not</em> called if you explicitly call <code>Close()</code> on the conversation, or if you did not set <code>ListenDuration</code> nor <code>ListenUntil</code>. Also, if you override TimeoutFunc, you need to call Close() yourself otherwise, the conversation is not removed from the listeners</td>
+</tr>
+
+<tr>
+<td align="left">Bot</td>
+<td>*Bot</td>
+<td align="left">Bot is a reference to the bot instance.  It will always be populated before being passed to handler functions.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="methods">Methods</h3>
+
+<p>Methods extend granular control to developers, allowing them to manually close a listener, control ACK&rsquo;s to Slack&rsquo;s servers, and reset timers.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Method</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">Close()</td>
+<td align="left">Close terminates the Listener management goroutine, and stops any further listening and message handling</td>
+</tr>
+
+<tr>
+<td align="left">ReplyAck()</td>
+<td align="left">ReplyAck returns the AckMessage received that corresponds to the Reply on which you called <code>Listen()</code></td>
+</tr>
+
+<tr>
+<td align="left">ResetDuration()</td>
+<td align="left">ResetDuration re-initializes the timeout set by <code>Listener.ListenDuration</code>, and continues listening for another such duration.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="message-handling">Message Handling</h2>
+
+<p>When you receive a message after it matches the criteria given by a <code>bawt.Listener</code> you will receive it as a struct called <code>bawt.Message</code>.</p>
+
+<h3 id="fields-1">Fields</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><code>*slack.Msg</code></td>
+<td align="left"></td>
+<td align="left">Allows you to accesss the underlying Slack message primitive</td>
+</tr>
+
+<tr>
+<td align="left"><code>SubMessage</code></td>
+<td align="left"><code>*slack.Msg</code></td>
+<td align="left">Threaded replies</td>
+</tr>
+
+<tr>
+<td align="left"><code>MentionsMe</code></td>
+<td align="left"><code>bool</code></td>
+<td align="left">Does the user @mention the bot</td>
+</tr>
+
+<tr>
+<td align="left"><code>IsEdit</code></td>
+<td align="left"><code>bool</code></td>
+<td align="left">Is this message the result of an edit</td>
+</tr>
+
+<tr>
+<td align="left"><code>FromMe</code></td>
+<td align="left"><code>bool</code></td>
+<td align="left">Was the message from the bot</td>
+</tr>
+
+<tr>
+<td align="left"><code>FromUser</code></td>
+<td align="left"><code>*slack.User</code></td>
+<td align="left">The user who sent the message</td>
+</tr>
+
+<tr>
+<td align="left"><code>FromChannel</code></td>
+<td align="left"><code>*Channel</code></td>
+<td align="left">The channel the message was received in, including direct messages</td>
+</tr>
+
+<tr>
+<td align="left"><code>Match</code></td>
+<td align="left"><code>[]string</code></td>
+<td align="left">Match contains the result of Listener.Matches.FindStringSubmatch(msg.Text), when <code>Matches</code> is set on the <code>Listener</code>.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="methods-1">Methods</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">Function Signature</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><code>AddReaction(emoticon string) *Message</code></td>
+<td align="left">AddReaction adds a reaction to a message</td>
+</tr>
+
+<tr>
+<td align="left"><code>Contains(s string) bool</code></td>
+<td align="left">Contains searches for a single string in a noncase-sensitive fashion</td>
+</tr>
+
+<tr>
+<td align="left"><code>ContainsAll(strs []string) bool</code></td>
+<td align="left">ContainsAll searches for all strings in a noncase-sensitive fashion</td>
+</tr>
+
+<tr>
+<td align="left"><code>ContainsAny(strs []string) bool</code></td>
+<td align="left">ContainsAny searches for at least one noncase-sensitive matching string</td>
+</tr>
+
+<tr>
+<td align="left"><code>ContainsAnyCased(strs []string) bool</code></td>
+<td align="left">ContainsAnyCased searches for at least one case-sensitive word</td>
+</tr>
+
+<tr>
+<td align="left"><code>HasPrefix(prefix string) bool</code></td>
+<td align="left">HasPrefix returns true if a message starts with a given string</td>
+</tr>
+
+<tr>
+<td align="left"><code>IsPrivate() bool</code></td>
+<td align="left">IsPrivate determines if a message is private or not</td>
+</tr>
+
+<tr>
+<td align="left"><code>ListenReaction(reactListen *ReactionListener)</code></td>
+<td align="left">ListenReaction listens for a reaction on a message</td>
+</tr>
+
+<tr>
+<td align="left"><code>RemoveReaction(emoticon string) *Message</code></td>
+<td align="left">RemoveReaction removes a reaction from a message</td>
+</tr>
+
+<tr>
+<td align="left"><code>Reply(text string, v ...interface{}) *Reply</code></td>
+<td align="left">Reply sends a message back to the source it came from, without a mention</td>
+</tr>
+
+<tr>
+<td align="left"><code>ReplyMention(text string, v ...interface{}) *Reply</code></td>
+<td align="left">ReplyMention replies with a @mention named prefixed, when replying in public. When replying in private, nothing is added.</td>
+</tr>
+
+<tr>
+<td align="left"><code>ReplyPrivately(text string, v ...interface{}) *Reply</code></td>
+<td align="left">ReplyPrivately replies to the user in an IM</td>
+</tr>
+
+<tr>
+<td align="left"><code>ReplyWithFile(p FileUploadParameters) *ReplyWithFile</code></td>
+<td align="left">ReplyWithFile replies with a snippet or an attached file</td>
+</tr>
+
+<tr>
+<td align="left"><code>String() string</code></td>
+<td align="left">String returns a message with field:value as a string</td>
+</tr>
+</tbody>
+</table>
+
+
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -686,20 +1079,6 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -716,6 +1095,23 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
                 
                 
 
@@ -728,6 +1124,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -745,24 +1142,8 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
                         
-            
-            
-                
+                        
                     
                 
                 
@@ -790,38 +1171,6 @@
                     
                     
 
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
                     
             
         
@@ -858,6 +1207,57 @@
                     
 
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
             
         
                     
@@ -868,8 +1268,10 @@
 
 
         
+            <a class="nav nav-prev" href="/bawt/developers/plugins/types/" title="Types"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/developers/plugins/types/30-web-plugins/" title="Web Plugins" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +1301,4 @@
 
   </body>
 </html>
+

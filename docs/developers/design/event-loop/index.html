@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Hugo 0.50-DEV" />
-    <meta name="description" content="a Slackbot framework written in Go">
+    <meta name="description" content="The event loop is designed to keep Bawt&#39;s internal state in line as well as pass messages to listeners.">
 
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Event Loop :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/developers/design/event-loop/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -193,7 +193,7 @@
   
     
     <li data-nav-id="/bawt/developers/" title="Developers" class="dd-item 
-        
+        parent
         
         
         ">
@@ -372,7 +372,7 @@
   
     
     <li data-nav-id="/bawt/developers/design/" title="Design" class="dd-item 
-        
+        parent
         
         
         ">
@@ -398,7 +398,7 @@
  
   
     
-      <li data-nav-id="/bawt/developers/design/event-loop/" title="Event Loop" class="dd-item ">
+      <li data-nav-id="/bawt/developers/design/event-loop/" title="Event Loop" class="dd-item active">
         <a href="/bawt/developers/design/event-loop/">
         Event Loop
         <i class="fas fa-check read-icon"></i>
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcdevelopers/design/event-loop.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,25 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > <a href='/bawt/developers/'>Developers</a> > <a href='/bawt/developers/design/'>Design</a> > Event Loop
+          
+         
+          
+         
+          
+         
           
            
                   </span>
@@ -548,7 +577,17 @@
                 
                     <div class="progress">
     <div class="wrapper">
-
+<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#events">Events</a>
+<ul>
+<li><a href="#slack-messageevent">slack.MessageEvent</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
     </div>
 </div>
 
@@ -560,7 +599,7 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Event Loop</h1>
           
 
         
@@ -568,9 +607,80 @@
 
 
 
+<p>Core to bawt is listening to an event queue that Slack provides in the form of their Real Time Messaging API. We process this queue through an event loop, which takes it where it needs to go in bawt mainly for internal purposes.</p>
+
+<div class="mermaid" align="left">
+graph LR;
+    A[slack.RTMEvent] -->|Process Event| B(handleRTMEvent)
+    BB -.-> C(slack.LatencyReport)
+    BB -.-> D(slack.RTMError)
+    BB -.-> E(slack.ConnectedEvent)
+    BB -.-> F(slack.DisconnectedEvent)
+    BB -.-> G(slack.InvalidAuthEvent)
+    BB -.-> H(slack.ConnectingEvent)
+    BB -.-> I(slack.HelloEvent)
+    BB -.-> J(slack.MessageEvent)
+    BB -.-> K(slack.UserChangeEvent)
+    BB -.-> L(slack.ChannelRenameEvent)
+    BB -.-> M(slack.ChannelJoinedEvent)
+    BB -.-> N(slack.ChannelCreatedEvent)
+    BB -.-> O(slack.ChannelDeletedEvent)
+    BB -.-> P(slack.ChannelArchiveEvent)
+    BB -.-> Q(slack.GroupRenameEvent)
+    BB -.-> R(slack.GroupJoinedEvent)
+    BB -.-> S(slack.GroupCreatedEvent)
+    BB -.-> T(slack.GroupCloseEvent)
+    BB -.-> U(slack.GroupArchiveEvent)
+    BB -.-> V(slack.GroupUnarchivedEvent)
+    BB -.-> W(slack.IMCreatedEvent)
+    BB -.-> X(slack.IMOpenEvent)
+    BB -.-> Y(slack.IMCloseEvent)
+    BB -.-> Z(slack.AckErrorEvent)
+    BB -.-> AA(slack.ConnectionErrorEvent)
+    B -->|First| BB{Event Loop}
+    B -->|Second| CC(Send to Listeners Loop)
+
+    click J "/bawt/developers/design/event-loop/#slack-messageevent" "Click for more details"
+</div>
+
+
+<div class="notices note" ><p>bawt&rsquo;s ordered execution of the event loop and the listeners is intentional. Many of bawt&rsquo;s plugins assume that bawt&rsquo;s internal state is up to date and this prevents strange race conditions.</p>
+</div>
+
+
+<h2 id="events">Events</h2>
+
+<h3 id="slack-messageevent">slack.MessageEvent</h3>
+
+<p>Notice this is not where messages are routed to listeners. The event loop is internal to bawt and only important for keeping bawt&rsquo;s core state inline.</p>
+
+<div class="mermaid" align="left">
+graph LR;
+    A[slack.MessageEvent] -->|Incoming Message| B{Event Loop}
+    B -->|Determine by Type| C(slack.Message)
+    C -.->|Normalize Message| D("&Message{}")
+    C -.-> E{ev.Msg.SubType}
+    D -.-> F(message_changed)
+    D -.-> G(channel_topic)
+    D -.-> H(channel_purpose)
+    C -.->|Verify UserMap| I(bot.Users)
+    C -.->|Verify ChannelMap| J(bot.Channels)
+    C -.->|Mutate Message| K(applyMentionsMe)
+    C -.->|Mutate Message| L(applyFromMe)
+    B -->|Dispatch to Listeners| M((Dispatcher))
+    M -.-> N(Listener A)
+    N -.->|Message Handler| O(bawt.Listener.filterAndDispatchMessage)
+    O -.-> Q(bawt.Listener.filterMessage)
+    Q -.-> R(bawt.Listener.MessageHandlerFunc)
+    N -.->|Event Handler| P(bawt.Listener.EventHandlerFunc)
+</div>
+
+
+
 <footer class=" footline" >
 	
 </footer>
+
 
         
         </div> 
@@ -686,6 +796,25 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
                 
                 
 
@@ -706,8 +835,6 @@
 
                     
                     
-                        
-                    
                     
 
                     
@@ -723,38 +850,6 @@
                     
                     
 
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
                     
             
         
@@ -794,38 +889,6 @@
             
         
                     
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
             
         
                     
@@ -850,6 +913,62 @@
             
                 
                     
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
                 
                 
 
@@ -868,8 +987,10 @@
 
 
         
+            <a class="nav nav-prev" href="/bawt/developers/design/" title="Design"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/press-kit/" title="Press Kit" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
@@ -899,3 +1020,4 @@
 
   </body>
 </html>
+

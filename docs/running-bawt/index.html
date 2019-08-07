@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" href="/bawt/images/favicon.png" type="image/x-icon" />
 <link rel="icon" href="/bawt/images/favicon.png" type="image/x-icon" />
-    <title>Categories :: Documentation for Hugo Learn Theme</title>
+    <title>Running bawt :: Documentation for Hugo Learn Theme</title>
 
     
     <link href="/bawt/css/nucleus.css?1565147846" rel="stylesheet">
@@ -38,7 +38,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/bawt/categories/">
+  <body class="" data-url="/bawt/running-bawt/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -102,8 +102,8 @@
   
     
     <li data-nav-id="/bawt/running-bawt/" title="Running bawt" class="dd-item 
-        
-        
+        parent
+        active
         
         ">
       <a href="/bawt/running-bawt/">
@@ -526,6 +526,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/gopherworks/bawt/tree/master/content/docs-srcrunning-bawt/_index.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -540,7 +551,13 @@
                     
           
           
-            Categories
+            
+            
+          
+          
+            <a href='/bawt/'>home</a> > Running bawt
+          
+         
           
            
                   </span>
@@ -560,10 +577,147 @@
         
         <div id="body-inner">
           
-            <h1>Categories</h1>
+            <h1>Running bawt</h1>
           
 
         
+
+
+<p>Optomized bawt configuration is available for bawts. This configuration expects that you have an entrypoint (binary) called <code>bot</code> that takes an argument of <code>run-server</code>, however, you may customize it to your liking.</p>
+
+
+
+
+
+
+
+
+<ul class="children children-div">
+	
+    
+    
+
+	
+		
+	
+		
+  
+
+
+<div>
+<a href="/bawt/running-bawt/kubernetes/" >Kubernetes</a>
+</div>
+
+
+
+
+
+
+			
+				
+<p>The Kubernetes manifests are currently being iterated on.</p>
+				
+			
+		
+
+		
+			
+
+	
+    
+    
+
+	
+		
+	
+
+	
+
+			
+
+		
+	
+		
+  
+
+
+<div>
+<a href="/bawt/running-bawt/docker/" >Docker</a>
+</div>
+
+
+
+
+
+
+			
+				
+<p>This assumes a Dockerfile in the same folder as your main package with modules and vendoring.
+FROM golang:alpine as builder RUN mkdir /build COPY . /build WORKDIR /build RUN apk add --update musl-dev gcc go git mercurial RUN env GO111MODULE=on go build -mod=vendor -o builds/bot . FROM alpine RUN apk --no-cache add ca-certificates RUN adduser -S -D -H -h /app appuser USER appuser RUN id COPY --from=builder /build/builds/bot /app/ WORKDIR /app CMD [&quot;.</p>
+				
+			
+		
+
+		
+			
+
+	
+    
+    
+
+	
+		
+	
+
+	
+
+			
+
+		
+	
+		
+  
+
+
+<div>
+<a href="/bawt/running-bawt/docker-compose/" >Docker Compose</a>
+</div>
+
+
+
+
+
+
+			
+				
+<p>The following configuration is how we do local development with Docker Compose.
+version: '3.7' services: bot: image: 'your/docker-image:latest' restart: always command: - ./bot - runserver ports: - &quot;8080:8080&quot; volumes: - type: bind source: ./bot.bolt.db target: /bot.bolt.db read_only: false - type: bind source: ./config.yaml target: /config.yaml read_only: false  </p>
+				
+			
+		
+
+		
+			
+
+	
+    
+    
+
+	
+		
+	
+
+	
+
+			
+
+		
+	
+
+	
+</ul>
+
+
 
 
 
@@ -622,6 +776,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -634,6 +789,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -645,84 +803,6 @@
                     
             
         
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                        
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
                     
                         
             
@@ -769,6 +849,84 @@
 
                     
                     
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
                     
 
                     
@@ -868,8 +1026,10 @@
 
 
         
+            <a class="nav nav-prev" href="/bawt/getting-started/" title="Getting Started"> <i class="fas fa-chevron-left"></i></a>
         
-            <a class="nav nav-next" href="/bawt/getting-started/" title="Getting Started" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
+        
+            <a class="nav nav-next" href="/bawt/running-bawt/kubernetes/" title="Kubernetes" style="margin-right: 0px;"><i class="fas fa-chevron-right"></i></a>
         
     </div>
 
