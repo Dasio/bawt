@@ -648,19 +648,21 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			}
 		}
 
-		// Verify the User and Channel maps. If they're broken we cannot reply specifically to a user.
+		// Verify the UserMap
 		user, ok := bot.Users[userID]
 		if ok {
 			log.Debug("User map is ok.")
 			msg.FromUser = &user
 		} else if ev.Msg.SubType != "bot_message" { // Bot users don't get UID's so don't put them in the user map
 			log.WithFields(logrus.Fields{
-				"Type":  "BrokenUserMap",
-				"Users": len(bot.Users),
-				"User":  userID,
-			}).Error("User map is broken.")
+				"Type":    "BrokenUserMap",
+				"SubType": ev.Msg.SubType,
+				"Users":   len(bot.Users),
+				"User":    userID,
+			}).Error("UserMap is broken, unknown SubType.")
 		}
 
+		// Verify the ChannelMap
 		channel, ok := bot.Channels[ev.Channel]
 		if ok {
 			log.Debug("Channel map is ok.")

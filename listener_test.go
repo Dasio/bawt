@@ -1,11 +1,13 @@
 package bawt
 
 import (
+	"io/ioutil"
 	"regexp"
 	"testing"
 	"time"
 
 	"github.com/nlopes/slack"
+	"github.com/sirupsen/logrus"
 )
 
 func TestListenerCheckParams(t *testing.T) {
@@ -20,7 +22,11 @@ func TestListenerCheckParams(t *testing.T) {
 }
 
 func TestDefaultFilter(t *testing.T) {
+	b := &Bot{}
+	b.Logging.Logger = logrus.New()
+	b.Logging.Logger.Out = ioutil.Discard
 	c := &Listener{}
+	c.Bot = b
 	u := &slack.User{ID: "a_user"}
 	m := &Message{Msg: &slack.Msg{Text: "hello mama"}, FromUser: u}
 
@@ -33,29 +39,35 @@ func TestDefaultFilter(t *testing.T) {
 		r bool
 	}
 	tests := []El{
-		El{&Listener{}, true},
+		El{&Listener{Bot: b}, true},
 
 		El{&Listener{
+			Bot:      b,
 			Contains: "moo",
 		}, false},
 
 		El{&Listener{
+			Bot:      b,
 			Contains: "MAMA",
 		}, true},
 
 		El{&Listener{
+			Bot:      b,
 			FromUser: u,
 		}, true},
 
 		El{&Listener{
+			Bot:     b,
 			Matches: regexp.MustCompile(`hello`),
 		}, true},
 
 		El{&Listener{
+			Bot:     b,
 			Matches: regexp.MustCompile(`other-message`),
 		}, false},
 
 		El{&Listener{
+			Bot:      b,
 			FromUser: &slack.User{ID: "another_user"},
 		}, false},
 	}
@@ -68,7 +80,8 @@ func TestDefaultFilter(t *testing.T) {
 }
 
 func TestMatchesMessage(t *testing.T) {
-	c := &Listener{Matches: regexp.MustCompile(`(this) (is) (good)`)}
+	c := &Listener{Bot: &Bot{Logging: Logging{Logger: logrus.New()}}, Matches: regexp.MustCompile(`(this) (is) (good)`)}
+	c.Bot.Logging.Logger.Out = ioutil.Discard // Silence logs
 	m := &Message{Msg: &slack.Msg{Text: "yeah this is good and all"}}
 
 	if c.filterMessage(m) != true {

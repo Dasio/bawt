@@ -222,15 +222,15 @@ func (listen *Listener) filterAndDispatchMessage(msg *Message) {
 
 // filterMessage applies checks from a Listener against a Message.
 func (listen *Listener) filterMessage(msg *Message) bool {
+	log := listen.Bot.Logging.Logger
+
 	if msg.Msg.SubType == "message_deleted" {
-		// like "message_deleted"
 		return false
 	}
 	if msg.Msg.SubType == "message_changed" && !listen.ListenForEdits {
 		return false
 	}
 
-	// Never pick up on other bot's messages
 	if msg.Msg.SubType == "bot_message" {
 		return false
 	}
@@ -277,7 +277,7 @@ func (listen *Listener) filterMessage(msg *Message) bool {
 		member := false
 
 		for _, g := range listen.FromInternalGroup {
-			listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Evaluating Access")
+			log.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Evaluating Access")
 
 			grp := InternalGroup{
 				Name: g,
@@ -285,14 +285,14 @@ func (listen *Listener) filterMessage(msg *Message) bool {
 
 			m, err := grp.IsUserMember(listen.Bot.DB, msg.FromUser.ID)
 			if err != nil {
-				listen.Bot.Logging.Logger.WithError(err).Error("Error determining if user is a member of group")
+				log.WithError(err).Error("Error determining if user is a member of group")
 
 				return false
 			}
 
 			// If user is a member
 			if m {
-				listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Access Granted")
+				log.WithField("user", msg.FromUser.ID).WithField("group", g).Debug("Access Granted")
 				member = true
 
 				break
@@ -300,7 +300,7 @@ func (listen *Listener) filterMessage(msg *Message) bool {
 		}
 
 		if !member {
-			listen.Bot.Logging.Logger.WithField("user", msg.FromUser.ID).Debug("Access Denied")
+			log.WithField("user", msg.FromUser.ID).Debug("Access Denied")
 			return false
 		}
 	}
