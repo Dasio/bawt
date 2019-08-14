@@ -37,6 +37,6 @@ func (bot *Bot) setupLogging() error {
 
 	log.SetFormatter(formatter)
 	log.SetLevel(level)
-	
+
 	return nil
 }

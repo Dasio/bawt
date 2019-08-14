@@ -18,6 +18,7 @@ import (
 
 var web *Webapp
 
+// Webapp represents the Web Server Plugin
 type Webapp struct {
 	config                *WebappConfig
 	store                 *sessions.CookieStore
@@ -30,6 +31,7 @@ type Webapp struct {
 	authenticatedUserFunc func(req *http.Request) (*slack.User, error)
 }
 
+// WebappConfig is the plugin config and must be public due to marshaling
 type WebappConfig struct {
 	Listen            string `json:"listen" mapstructure:"listen"`
 	SessionAuthKey    string `json:"session_auth_key" mapstructure:"session_auth_key"`
@@ -40,11 +42,13 @@ func init() {
 	bawt.RegisterPlugin(&Webapp{})
 }
 
+// InitWebServer is called as part of Bawt's plugin registration process
 func (webapp *Webapp) InitWebServer(bot *bawt.Bot, enabledPlugins []string) {
 	var conf struct {
 		Webapp WebappConfig
 	}
 	bot.LoadConfig(&conf)
+	bot.Status.Update("http", "not ok")
 
 	webapp.bot = bot
 	webapp.enabledPlugins = enabledPlugins
@@ -58,9 +62,12 @@ func (webapp *Webapp) InitWebServer(bot *bawt.Bot, enabledPlugins []string) {
 	web = webapp
 }
 
+// PrivateRouter returns the router that serves on /
 func (webapp *Webapp) PrivateRouter() *mux.Router {
 	return webapp.privateRouter
 }
+
+// PublicRouter returns the router that serves on /public
 func (webapp *Webapp) PublicRouter() *mux.Router {
 	return webapp.publicRouter
 }
@@ -75,6 +82,7 @@ func (webapp *Webapp) SetAuthenticatedUserFunc(f func(req *http.Request) (*slack
 	webapp.authenticatedUserFunc = f
 }
 
+// AuthenticatedUser is middleware for authenticating users with the authenticatedUserFunc
 func (webapp *Webapp) AuthenticatedUser(req *http.Request) (*slack.User, error) {
 	if webapp.authenticatedUserFunc == nil {
 		return nil, fmt.Errorf("No WebServerAuth plugin registered any AuthenticatedUser func call")
@@ -82,6 +90,7 @@ func (webapp *Webapp) AuthenticatedUser(req *http.Request) (*slack.User, error) 
 	return webapp.authenticatedUserFunc(req)
 }
 
+// RunServer starts the web server
 func (webapp *Webapp) RunServer() {
 	privMux := http.NewServeMux()
 	privMux.Handle("/", webapp.PrivateRouter())
@@ -98,8 +107,12 @@ func (webapp *Webapp) RunServer() {
 	webapp.handler.UseHandler(context.ClearHandler(pubMux))
 
 	webapp.handler.Run(webapp.config.Listen)
+
+	// This is kind of lazy
+	webapp.bot.Status.Update("http", "ok")
 }
 
+// GetSession retrieves the user session
 func (webapp *Webapp) GetSession(r *http.Request) *sessions.Session {
 	sess, err := web.store.Get(r, "bawt")
 	if err != nil {

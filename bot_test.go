@@ -41,34 +41,30 @@ func TestNew(t *testing.T) {
 
 func TestBot_readInConfig(t *testing.T) {
 	bot := New("")
-
 	e := "test"
+
 	os.Setenv("CONFIG_API_TOKEN", e)
-	bot.LoadConfig(bot)
+	bot.LoadConfig(bot, []string{"config.api_token"}...)
 	assert.NotEmpty(t, bot.Config.APIToken)
 	assert.Equal(t, e, bot.Config.APIToken)
 
-	e = "test"
 	os.Setenv("CONFIG_GENERAL_CHANNEL", e)
-	bot.LoadConfig(bot)
+	bot.LoadConfig(bot, []string{"config.general_channel"}...)
 	assert.NotEmpty(t, bot.Config.GeneralChannel)
 	assert.Equal(t, e, bot.Config.GeneralChannel)
 
-	e = "test"
 	os.Setenv("CONFIG_TEAM_DOMAIN", e)
-	bot.LoadConfig(bot)
+	bot.LoadConfig(bot, []string{"config.team_domain"}...)
 	assert.NotEmpty(t, bot.Config.TeamDomain)
 	assert.Equal(t, e, bot.Config.TeamDomain)
 
-	e = "test"
-	os.Setenv("CONFIG_WEB_BASE_URL", e)
-	bot.LoadConfig(bot)
-	assert.NotEmpty(t, bot.Config.WebBaseURL)
-	assert.Equal(t, e, bot.Config.WebBaseURL)
-
-	e = "test"
 	os.Setenv("CONFIG_DB_PATH", e)
-	bot.LoadConfig(bot)
+	bot.LoadConfig(bot, []string{"config.db_path"}...)
 	assert.NotEmpty(t, bot.Config.DBPath)
 	assert.Equal(t, e, bot.Config.DBPath)
+
+	os.Setenv("CONFIG_PID_PATH", e)
+	bot.LoadConfig(bot, []string{"config.pid_path"}...)
+	assert.NotEmpty(t, bot.Config.PIDPath)
+	assert.Equal(t, e, bot.Config.PIDPath)
 }

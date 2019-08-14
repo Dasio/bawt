@@ -39,34 +39,34 @@ func TestDefaultFilter(t *testing.T) {
 		r bool
 	}
 	tests := []El{
-		El{&Listener{Bot: b}, true},
+		{&Listener{Bot: b}, true},
 
-		El{&Listener{
+		{&Listener{
 			Bot:      b,
 			Contains: "moo",
 		}, false},
 
-		El{&Listener{
+		{&Listener{
 			Bot:      b,
 			Contains: "MAMA",
 		}, true},
 
-		El{&Listener{
+		{&Listener{
 			Bot:      b,
 			FromUser: u,
 		}, true},
 
-		El{&Listener{
+		{&Listener{
 			Bot:     b,
 			Matches: regexp.MustCompile(`hello`),
 		}, true},
 
-		El{&Listener{
+		{&Listener{
 			Bot:     b,
 			Matches: regexp.MustCompile(`other-message`),
 		}, false},
 
-		El{&Listener{
+		{&Listener{
 			Bot:      b,
 			FromUser: &slack.User{ID: "another_user"},
 		}, false},

@@ -20,7 +20,7 @@ func TestFindNextRoom(t *testing.T) {
 			"room3": c3,
 		}},
 		meetings: map[string]*Meeting{
-			"room1": &Meeting{},
+			"room1": {},
 		},
 		confRooms: []string{
 			"room1",
@@ -74,7 +74,7 @@ func TestFindNextRoomAllTake(t *testing.T) {
 	w := &Wicked{
 		bot: &bawt.Bot{Channels: map[string]bawt.Channel{}},
 		meetings: map[string]*Meeting{
-			"room1": &Meeting{},
+			"room1": {},
 		},
 		confRooms: []string{"room1"},
 	}

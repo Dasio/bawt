@@ -35,14 +35,14 @@ github.com/hashicorp/hcl/json/token
 github.com/jmcvetta/napping
 # github.com/konsorten/go-windows-terminal-sequences v0.0.0-20180402223658-b729f2633dfe
 github.com/konsorten/go-windows-terminal-sequences
-# github.com/kr/pty v1.1.3
-github.com/kr/pty
 # github.com/magiconair/properties v1.8.0
 github.com/magiconair/properties
 # github.com/mitchellh/mapstructure v1.0.0
 github.com/mitchellh/mapstructure
-# github.com/nlopes/slack v0.5.0
+# github.com/nlopes/slack v0.5.1-0.20190809025457-0492f2f7dba4
 github.com/nlopes/slack
+github.com/nlopes/slack/internal/errorsx
+github.com/nlopes/slack/internal/timex
 github.com/nlopes/slack/slackutilsx
 # github.com/pelletier/go-toml v1.2.0
 github.com/pelletier/go-toml
@@ -68,7 +68,6 @@ github.com/stretchr/testify/assert
 # golang.org/x/crypto v0.0.0-20180904163835-0709b304e793
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
-golang.org/x/net/websocket
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
 # golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced

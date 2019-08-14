@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"reflect"
 	"strconv"
 	"strings"
 	"sync"
@@ -26,9 +25,10 @@ var Version string
 // Bot connects Bawt's configuration and API
 type Bot struct {
 	configFile   string
-	Config       SlackConfig `json:"Config"`
-	Logging      Logging     `json:"Logging"`
-	GlobalAdmins []string    `json:"GlobalAdmins"`
+	Status       Status
+	Config       Config   `json:"Config"`
+	Logging      Logging  `json:"Logging"`
+	GlobalAdmins []string `json:"GlobalAdmins"`
 
 	// Slack connectivity
 	Slack             *slack.Client
@@ -67,6 +67,7 @@ config.json|toml|yaml instead
 func New(configFile string) *Bot {
 	bot := &Bot{
 		configFile:     configFile,
+		Status:         NewStatus(),
 		outgoingMsgCh:  make(chan *slack.OutgoingMessage, 500),
 		outgoingFileCh: make(chan *slack.File, 500),
 		addListenerCh:  make(chan *Listener, 500),
@@ -89,8 +90,20 @@ func New(configFile string) *Bot {
 
 // Run loads the config, turns on logging, writes the PID, and loads the plugins.
 func (bot *Bot) Run() {
+	envVars := []string{
+		"config.api_token",
+		"config.join_channels",
+		"config.general_channel",
+		"config.team_domain",
+		"config.web_base_url",
+		"config.db_path",
+		"logging.type",
+		"logging.level",
+		"globaladmins",
+	}
+
 	// Config for Slack and logging are read in
-	if err := bot.LoadConfig(bot); err != nil {
+	if err := bot.LoadConfig(bot, envVars...); err != nil {
 		fmt.Printf("Could not start bot: %s", err)
 		os.Exit(1)
 	}
@@ -105,14 +118,16 @@ func (bot *Bot) Run() {
 
 	// Write PID
 	if err = bot.writePID(); err != nil {
-		log.Fatal("Couldn't write PID file:", err)
+		log.WithError(err).Fatal("Could not write PID file")
 	}
 
-	// Open BoltDB
-	db, err := bolt.Open(bot.Config.DBPath, 0600, nil)
+	db, err := bot.setupDB()
 	if err != nil {
-		log.WithError(err).Fatalf("Could not initialize BoltDB key/value store: %s", err)
+		log.WithError(err).Fatal("Failed to setup BoltDB")
 	}
+
+	// The above command throws a Fatal if no connection is made
+	bot.Status.Update("db", "ok")
 
 	defer func() {
 		log.Warnf("Database is closing")
@@ -149,42 +164,10 @@ func (bot *Bot) Run() {
 	}
 
 	// Init all plugins
-	var enabledPlugins []string
-	for _, plugin := range registeredPlugins {
-		pluginType := reflect.TypeOf(plugin)
-		if pluginType.Kind() == reflect.Ptr {
-			pluginType = pluginType.Elem()
-		}
-		var typeList []string
-		if _, ok := plugin.(PluginInitializer); ok {
-			typeList = append(typeList, "Plugin")
-		}
-		if _, ok := plugin.(WebServer); ok {
-			typeList = append(typeList, "WebServer")
-		}
-		if _, ok := plugin.(WebServerAuth); ok {
-			typeList = append(typeList, "WebServerAuth")
-		}
-		if _, ok := plugin.(WebPlugin); ok {
-			typeList = append(typeList, "WebPlugin")
-		}
-
-		log.Printf("Plugin %s implements %s", pluginType.String(),
-			strings.Join(typeList, ", "))
-		enabledPlugins = append(enabledPlugins, strings.Replace(pluginType.String(), ".", "_", -1))
-	}
-
-	initWebServer(bot, enabledPlugins)
-	initWebPlugins(bot)
-
-	if bot.WebServer != nil {
-		go bot.WebServer.RunServer()
-	}
-
-	initChatPlugins(bot)
+	initPlugins(bot)
 
 	// Slack requires its own debug flag
-	if strings.ToUpper(bot.Logging.Level) == "DEBUG" {
+	if strings.ToUpper(bot.Logging.Level) == "TRACE" {
 		bot.Slack = slack.New(bot.Config.APIToken, slack.OptionDebug(true))
 	} else {
 		bot.Slack = slack.New(bot.Config.APIToken)
@@ -198,19 +181,13 @@ func (bot *Bot) Run() {
 }
 
 func (bot *Bot) writePID() error {
-	var serverConf struct {
-		Server struct {
-			Pidfile string `mapstructure:"pid_file"`
-		}
-	}
-
-	if serverConf.Server.Pidfile == "" {
+	if bot.Config.PIDPath == "" {
 		return nil
 	}
 
 	pid := os.Getpid()
 	pidb := []byte(strconv.Itoa(pid))
-	return ioutil.WriteFile(serverConf.Server.Pidfile, pidb, 0755)
+	return ioutil.WriteFile(bot.Config.PIDPath, pidb, 0755)
 }
 
 /*
@@ -229,7 +206,7 @@ func (bot *Bot) Listen(listen *Listener) error {
 
 	err := listen.checkParams()
 	if err != nil {
-		log.Println("Bot.Listen(): Invalid Listener: ", err)
+		log.WithError(err).Error("Invalid listener")
 		return err
 	}
 
@@ -317,14 +294,15 @@ func (bot *Bot) cacheChannels(channels []slack.Channel, groups []slack.Group, im
 }
 
 // LoadConfig will load configuration from a file or environment variables and populate it into the Bot struct
-func (bot *Bot) LoadConfig(cfg interface{}) error {
+func (bot *Bot) LoadConfig(cfg interface{}, envVars ...string) error {
 	log := bot.Logging.Logger
 
 	// Use viper to find a default config file, or open the provided file is set
 	if bot.configFile == "" {
-		viper.SetConfigName("config")      // The config file will go by "config"
-		viper.AddConfigPath(".")           // Look for config in the working directory
-		viper.AddConfigPath("$HOME/.bawt") // Look for config in .bawt folder in home directory
+		viper.SetConfigName("config") // The config file will go by "config"
+		viper.AddConfigPath(".")      // Look for config in the working directory
+		viper.AddConfigPath("$HOME/.bawt")
+		viper.AddConfigPath("/") // Look for config in .bawt folder in home directory
 	} else {
 		viper.SetConfigFile(bot.configFile)
 	}
@@ -340,18 +318,13 @@ func (bot *Bot) LoadConfig(cfg interface{}) error {
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	viper.BindEnv("config.api_token")
-	viper.BindEnv("config.join_channels")
-	viper.BindEnv("config.general_channel")
-	viper.BindEnv("config.team_domain")
-	viper.BindEnv("config.web_base_url")
-	viper.BindEnv("config.db_path")
-	viper.BindEnv("logging.type")
-	viper.BindEnv("logging.level")
-	viper.BindEnv("globaladmins")
+	// Binds environment variables to config values
+	for _, envVar := range envVars {
+		viper.BindEnv(envVar)
+	}
 
 	if err = viper.Unmarshal(cfg); err != nil {
-		log.WithError(err).Errorf("unable to decode into struct, %v", err)
+		log.WithError(err).Errorf("Failed to unmarshal config file")
 		return err
 	}
 
@@ -519,11 +492,10 @@ func (bot *Bot) messageHandler() {
 /*
 The main event loop.
 
-This code could probably use some cleaning up and is quite complex when looking
-at it for the first time.
+All RTM Events from Slack are passed through this loop. The first part of the loop
+updates Bawt's internal state.
 
-The gist of it is that we catch the event and route them from here. If an event
-has multiple receivers/listeners then the pattern is to use channels.
+The second part of the loop dispatches messages and events to listeners.
 */
 func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 	var msg *Message
@@ -578,7 +550,7 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			log.WithError(err).Fatal("Unable to fetch users")
 		}
 
-		log.Printf("Bot connected, connection_count=%d", ev.ConnectionCount)
+		log.Infof("Bot connected, connection_count=%d", ev.ConnectionCount)
 		bot.Myself = *ev.Info.User
 		bot.cacheUsers(users)                    // Store users
 		bot.cacheChannels(channels, groups, ims) // Store channels
@@ -593,6 +565,11 @@ func (bot *Bot) handleRTMEvent(event *slack.RTMEvent) {
 			if channel != nil && !channel.IsMember {
 				bot.Slack.JoinChannel(channel.ID)
 			}
+		}
+
+		err = bot.Status.Update("chat", "ok")
+		if err != nil {
+			log.WithError(err).Error("Error updating status field. This may result in healthcheck failures.")
 		}
 
 	case *slack.DisconnectedEvent:
@@ -888,6 +865,30 @@ func (bot *Bot) deleteChannel(id string) {
 	bot.channelUpdateLock.Lock()
 	delete(bot.Channels, id)
 	bot.channelUpdateLock.Unlock()
+}
+
+func (bot *Bot) setupDB() (*bolt.DB, error) {
+	log := bot.Logging.Logger
+
+	// Blank config paths will register as if they don't exist which generates
+	// weird errors for users to see
+	if bot.Config.DBPath == "" {
+		return nil, fmt.Errorf("db_path is blank")
+	}
+
+	if _, err := os.Stat(bot.Config.DBPath); os.IsNotExist(err) {
+		log.Infof("DBPath (%s) did not exist. Creating now.", bot.Config.DBPath)
+		if _, err := os.Create(bot.Config.DBPath); err != nil {
+			return nil, fmt.Errorf("Failed to create BoltDB store: %s", err)
+		}
+	}
+
+	db, err := bolt.Open(bot.Config.DBPath, 0600, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Could not initialize BoltDB key/value store: %s", err)
+	}
+
+	return db, nil
 }
 
 // NormalizeID normalizes slack user and channel ID's

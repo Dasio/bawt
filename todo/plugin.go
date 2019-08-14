@@ -1,7 +1,6 @@
 package todo
 
 import (
-
 	"github.com/boltdb/bolt"
 	"github.com/gopherworks/bawt"
 )

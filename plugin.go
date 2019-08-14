@@ -2,6 +2,8 @@ package bawt
 
 import (
 	"net/http"
+	"reflect"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -66,6 +68,45 @@ func RegisteredPlugins() []Plugin {
 	return registeredPlugins
 }
 
+func initPlugins(bot *Bot) {
+	var enabledPlugins []string
+
+	log := bot.Logging.Logger
+
+	for _, plugin := range registeredPlugins {
+		pluginType := reflect.TypeOf(plugin)
+		if pluginType.Kind() == reflect.Ptr {
+			pluginType = pluginType.Elem()
+		}
+		var typeList []string
+		if _, ok := plugin.(PluginInitializer); ok {
+			typeList = append(typeList, "Plugin")
+		}
+		if _, ok := plugin.(WebServer); ok {
+			typeList = append(typeList, "WebServer")
+		}
+		if _, ok := plugin.(WebServerAuth); ok {
+			typeList = append(typeList, "WebServerAuth")
+		}
+		if _, ok := plugin.(WebPlugin); ok {
+			typeList = append(typeList, "WebPlugin")
+		}
+
+		log.Infof("Plugin %s implements %s", pluginType.String(),
+			strings.Join(typeList, ", "))
+		enabledPlugins = append(enabledPlugins, strings.Replace(pluginType.String(), ".", "_", -1))
+	}
+
+	initWebServer(bot, enabledPlugins)
+	initWebPlugins(bot)
+
+	if bot.WebServer != nil {
+		go bot.WebServer.RunServer()
+	}
+
+	initChatPlugins(bot)
+}
+
 func initChatPlugins(bot *Bot) {
 	for _, plugin := range registeredPlugins {
 		chatPlugin, ok := plugin.(PluginInitializer)
@@ -103,7 +144,7 @@ func initWebPlugins(bot *Bot) {
 			count++
 
 			if count > 1 {
-				log.Fatalln("Can not load two WebServerAuth plugins. Already loaded one.")
+				log.Fatal("Can not load two WebServerAuth plugins. Already loaded one.")
 			}
 			webServerAuth.InitWebServerAuth(bot, bot.WebServer)
 		}

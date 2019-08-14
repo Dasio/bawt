@@ -13,15 +13,11 @@ require (
 	github.com/jmcvetta/napping v3.2.0+incompatible
 	github.com/jmcvetta/randutil v0.0.0-20150817122601-2bb1b664bcff // indirect
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/kr/pty v1.1.3
-	github.com/lusis/go-slackbot v0.0.0-20180109053408-401027ccfef5 // indirect
-	github.com/lusis/slack-test v0.0.0-20180109053238-3c758769bfa6 // indirect
-	github.com/nlopes/slack v0.5.0
-	github.com/pkg/errors v0.8.0 // indirect
+	github.com/nlopes/slack v0.5.1-0.20190809025457-0492f2f7dba4
 	github.com/sirupsen/logrus v1.1.1
 	github.com/spf13/viper v1.2.0
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
+	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1 // indirect
 	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect
 	golang.org/x/sys v0.0.0-20181011152604-fa43e7bc11ba // indirect

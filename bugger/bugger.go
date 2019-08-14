@@ -87,7 +87,6 @@ func (bugger *Bugger) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 	}
 
 	if msg.ContainsAny([]string{"bug report", "bug count"}) && msg.ContainsAny([]string{"how", "help"}) {
-
 		var report string
 
 		if msg.Contains("bug report") {
@@ -95,7 +94,8 @@ func (bugger *Bugger) ChatHandler(listen *bawt.Listener, msg *bawt.Message) {
 		} else {
 			report = "bug count"
 		}
-		mention := bugger.bot.Config.Nickname
+
+		mention := bugger.bot.Myself.Name
 
 		msg.Reply(fmt.Sprintf(
 			`Usage: %s, [give me a | insert demand]  <%s>  [from the | syntax filler] [last | past] [n] [days | weeks]

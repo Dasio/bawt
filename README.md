@@ -21,21 +21,13 @@ Our goal is that bawt is always **easy to start**, **easy to run**, **easy to en
 
 ## Local build and install
 
-### With Modules
+### Using Bawt
 
 ```shell
 go get github.com/gopherworks/bawt
 ```
 
-### Without Modules
-
-```shell
-go get github.com/gopherworks/bawt
-cd $GOPATH/src/github.com/gopherworks/bawt/example-bot
-go install -v && $GOPATH/bin/example-bot
-```
-
-There's a Dockerfile, example bot, and configuration in the `example-bot` directory.
+You import Bawt like any other package. Learn about [getting started with Bawt](https://gopherworks.github.io/bawt/getting-started/)!
 
 ## Writing your own plugin
 
@@ -64,3 +56,5 @@ func listenDeploy() {
 	})
 }
 ```
+
+Whether you're interested in developing on Bawt's core or your own plugin our [developer docs](https://gopherworks.github.io/bawt/developers/) can help out.
