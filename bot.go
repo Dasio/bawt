@@ -102,12 +102,6 @@ func (bot *Bot) Run() {
 		"globaladmins",
 	}
 
-	// Config for Slack and logging are read in
-	if err := bot.LoadConfig(bot, envVars...); err != nil {
-		fmt.Printf("Could not start bot: %s", err)
-		os.Exit(1)
-	}
-
 	// Configure logging
 	err := bot.setupLogging()
 	if err != nil {
@@ -115,6 +109,11 @@ func (bot *Bot) Run() {
 	}
 
 	log := bot.Logging.Logger
+	// Config for Slack and logging are read in
+	if err := bot.LoadConfig(bot, envVars...); err != nil {
+		fmt.Printf("Could not start bot: %s", err)
+		os.Exit(1)
+	}
 
 	// Write PID
 	if err = bot.writePID(); err != nil {
@@ -127,7 +126,9 @@ func (bot *Bot) Run() {
 	}
 
 	// The above command throws a Fatal if no connection is made
-	bot.Status.Update("db", "ok")
+	if err := bot.Status.Update("db", "ok"); err != nil {
+		log.WithError(err).Warn("failed to update status")
+	}
 
 	defer func() {
 		log.Warnf("Database is closing")
